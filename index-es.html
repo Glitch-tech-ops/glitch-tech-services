@@ -926,7 +926,7 @@
             <p style="margin-top: 10px; font-size: 0.8rem;">📍 Área de Hollywood/West Park/Hallandale | 📞 Servicio el Mismo Día Disponible | 💯 Satisfacción Garantizada</p>
             <div class="footer-links">
                 <a href="#" class="footer-link" id="aboutLinkFooter">Sobre Nosotros</a>
-                <a href="#services" class="footer-link">Servicios</a>
+                <a href="#" class="footer-link" id="servicesLink">Servicios</a>
                 <a href="#contact" class="footer-link">Contacto</a>
             </div>
         </div>
@@ -935,7 +935,7 @@
     <!-- About Modal -->
     <div id="aboutModal" class="modal">
         <div class="modal-content">
-            <span class="close-modal">&times;</span>
+            <span class="close-modal" onclick="closeModal('aboutModal')">&times;</span>
             <h2>Sobre Glitch Tech Services</h2>
             <p>Bienvenido a Glitch Tech Services – sus expertos locales de confianza en reparación de computadoras. Comenzamos con una misión simple: proporcionar servicios de reparación tecnológica rápidos, económicos y confiables sin el sobreprecio corporativo.</p>
             
@@ -951,6 +951,70 @@
         </div>
     </div>
 
+    <!-- Services Modal -->
+    <div id="servicesModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('servicesModal')">&times;</span>
+            <h2>Nuestros Servicios y Precios</h2>
+            
+            <div style="margin-bottom: 30px;">
+                <h3 style="color: var(--neon-green); margin-bottom: 10px; font-family: 'Orbitron', sans-serif;">🔧 Reparación y Mejora de Hardware</h3>
+                <p style="color: #b0b0b0; margin-bottom: 10px;">Mejoras de RAM, reemplazo de disco duro, instalación de SSD, reparación de placa madre, reemplazo de fuente de poder y diagnóstico de componentes.</p>
+                <p style="color: var(--neon-green); font-family: 'Orbitron', sans-serif; font-size: 1.3rem; font-weight: 700;">$60 - $150</p>
+                <p style="color: #888; font-size: 0.85rem;">Precio inicial, depende de las piezas</p>
+            </div>
+
+            <div style="margin-bottom: 30px;">
+                <h3 style="color: var(--neon-green); margin-bottom: 10px; font-family: 'Orbitron', sans-serif;">🛡️ Eliminación de Virus y Malware</h3>
+                <p style="color: #b0b0b0; margin-bottom: 10px;">Limpieza completa del sistema, eliminación de malware, recuperación de ransomware, instalación de software de seguridad y optimización del sistema.</p>
+                <p style="color: var(--neon-green); font-family: 'Orbitron', sans-serif; font-size: 1.3rem; font-weight: 700;">$50 - $80</p>
+                <p style="color: #888; font-size: 0.85rem;">Sistema limpio garantizado</p>
+            </div>
+
+            <div style="margin-bottom: 30px;">
+                <h3 style="color: var(--neon-green); margin-bottom: 10px; font-family: 'Orbitron', sans-serif;">💾 Recuperación de Datos</h3>
+                <p style="color: #b0b0b0; margin-bottom: 10px;">¿Archivos perdidos? ¿Disco duro dañado? Recuperamos datos de discos corruptos, eliminaciones accidentales y fallas del sistema.</p>
+                <p style="color: var(--neon-green); font-family: 'Orbitron', sans-serif; font-size: 1.3rem; font-weight: 700;">$75 - $200</p>
+                <p style="color: #888; font-size: 0.85rem;">Sin datos, sin cargo</p>
+            </div>
+
+            <div style="margin-bottom: 30px;">
+                <h3 style="color: var(--neon-green); margin-bottom: 10px; font-family: 'Orbitron', sans-serif;">⚡ Optimización de Rendimiento</h3>
+                <p style="color: #b0b0b0; margin-bottom: 10px;">¿Su computadora está lenta? Limpiamos su sistema, eliminamos bloatware, optimizamos el inicio y la hacemos funcionar como nueva.</p>
+                <p style="color: var(--neon-green); font-family: 'Orbitron', sans-serif; font-size: 1.3rem; font-weight: 700;">$40 - $60</p>
+                <p style="color: #888; font-size: 0.85rem;">Mejora inmediata visible</p>
+            </div>
+
+            <div style="margin-bottom: 30px;">
+                <h3 style="color: var(--neon-green); margin-bottom: 10px; font-family: 'Orbitron', sans-serif;">💻 Instalación y Configuración de SO</h3>
+                <p style="color: #b0b0b0; margin-bottom: 10px;">Instalación de Windows, configuración de Linux, configuración de arranque dual, instalación de controladores y configuración de software.</p>
+                <p style="color: var(--neon-green); font-family: 'Orbitron', sans-serif; font-size: 1.3rem; font-weight: 700;">$60 - $100</p>
+                <p style="color: #888; font-size: 0.85rem;">Incluye activación y actualizaciones</p>
+            </div>
+
+            <div style="margin-bottom: 30px;">
+                <h3 style="color: var(--neon-green); margin-bottom: 10px; font-family: 'Orbitron', sans-serif;">🔍 Diagnóstico de Computadoras</h3>
+                <p style="color: #b0b0b0; margin-bottom: 10px;">¿No está seguro de qué está mal? Realizamos diagnósticos completos para identificar problemas de hardware o software.</p>
+                <p style="color: var(--neon-green); font-family: 'Orbitron', sans-serif; font-size: 1.3rem; font-weight: 700;">$30</p>
+                <p style="color: #888; font-size: 0.85rem;">Gratis con servicio de reparación</p>
+            </div>
+
+            <div style="margin-bottom: 30px;">
+                <h3 style="color: var(--neon-green); margin-bottom: 10px; font-family: 'Orbitron', sans-serif;">🎮 Construcción de PC Personalizada</h3>
+                <p style="color: #b0b0b0; margin-bottom: 10px;">¿PC para gaming o estación de trabajo? Construimos una computadora personalizada adaptada a sus necesidades y presupuesto.</p>
+                <p style="color: var(--neon-green); font-family: 'Orbitron', sans-serif; font-size: 1.3rem; font-weight: 700;">$100 - $200</p>
+                <p style="color: #888; font-size: 0.85rem;">Tarifa de construcción (piezas aparte)</p>
+            </div>
+
+            <div style="margin-bottom: 30px;">
+                <h3 style="color: var(--neon-green); margin-bottom: 10px; font-family: 'Orbitron', sans-serif;">🚨 Servicio de Emergencia el Mismo Día</h3>
+                <p style="color: #b0b0b0; margin-bottom: 10px;">¿Lo necesita arreglado hoy? Ofrecemos servicio urgente para reparaciones urgentes. Disponible 7 días a la semana.</p>
+                <p style="color: var(--neon-green); font-family: 'Orbitron', sans-serif; font-size: 1.3rem; font-weight: 700;">+$30</p>
+                <p style="color: #888; font-size: 0.85rem;">Agregado al costo del servicio</p>
+            </div>
+        </div>
+    </div>
+
     <script>
         // Smooth scroll for CTA button
         document.querySelector('.cta-button').addEventListener('click', function(e) {
@@ -958,39 +1022,55 @@
             document.getElementById('contact').scrollIntoView({ behavior: 'smooth' });
         });
 
-        // Language switch - links to English version
-        // (No action needed, href already set to index.html)
+        // Modal functions
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
 
-        // About modal functionality
-        const modal = document.getElementById('aboutModal');
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        // About modal
         const aboutLinks = [document.getElementById('aboutLink'), document.getElementById('aboutLinkFooter')];
-        const closeBtn = document.querySelector('.close-modal');
-
         aboutLinks.forEach(link => {
             link.addEventListener('click', function(e) {
                 e.preventDefault();
-                modal.style.display = 'block';
-                document.body.style.overflow = 'hidden'; // Prevent background scroll
+                openModal('aboutModal');
             });
         });
 
-        closeBtn.addEventListener('click', function() {
-            modal.style.display = 'none';
-            document.body.style.overflow = 'auto'; // Re-enable scroll
+        // Services modal
+        document.getElementById('servicesLink').addEventListener('click', function(e) {
+            e.preventDefault();
+            openModal('servicesModal');
         });
 
+        // Close buttons
+        document.querySelectorAll('.close-modal').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const modal = this.closest('.modal');
+                closeModal(modal.id);
+            });
+        });
+
+        // Click outside to close
         window.addEventListener('click', function(e) {
-            if (e.target === modal) {
-                modal.style.display = 'none';
-                document.body.style.overflow = 'auto'; // Re-enable scroll
+            if (e.target.classList.contains('modal')) {
+                closeModal(e.target.id);
             }
         });
 
-        // Close modal with Escape key
+        // Escape key to close
         document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape' && modal.style.display === 'block') {
-                modal.style.display = 'none';
-                document.body.style.overflow = 'auto'; // Re-enable scroll
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.modal').forEach(modal => {
+                    if (modal.style.display === 'block') {
+                        closeModal(modal.id);
+                    }
+                });
             }
         });
     </script>
