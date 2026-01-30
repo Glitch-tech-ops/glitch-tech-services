@@ -467,7 +467,7 @@
     <section class="contact" id="contact">
         <div class="container">
             <h2 class="section-title">Get Your Free Quote</h2>
-            <form class="contact-form" id="contactForm">
+            <form class="contact-form" id="contactForm" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
                 <div class="form-group">
                     <label for="name">Name</label>
                     <input type="text" id="name" name="name" required>
@@ -487,14 +487,14 @@
                     <label for="service">Service Needed</label>
                     <select id="service" name="service" required>
                         <option value="">Select a service...</option>
-                        <option value="hardware">Hardware Repair & Upgrade</option>
-                        <option value="virus">Virus & Malware Removal</option>
-                        <option value="data">Data Recovery</option>
-                        <option value="performance">Performance Tune-Up</option>
-                        <option value="os">OS Installation & Setup</option>
-                        <option value="diagnostics">Computer Diagnostics</option>
-                        <option value="build">Custom PC Build</option>
-                        <option value="other">Other</option>
+                        <option value="Hardware Repair & Upgrade">Hardware Repair & Upgrade</option>
+                        <option value="Virus & Malware Removal">Virus & Malware Removal</option>
+                        <option value="Data Recovery">Data Recovery</option>
+                        <option value="Performance Tune-Up">Performance Tune-Up</option>
+                        <option value="OS Installation & Setup">OS Installation & Setup</option>
+                        <option value="Computer Diagnostics">Computer Diagnostics</option>
+                        <option value="Custom PC Build">Custom PC Build</option>
+                        <option value="Other">Other</option>
                     </select>
                 </div>
 
@@ -516,13 +516,6 @@
     </footer>
 
     <script>
-        // Form submission handler
-        document.getElementById('contactForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            alert('Thank you for your request! We\'ll contact you within 2 hours to discuss your repair.');
-            this.reset();
-        });
-
         // Smooth scroll for CTA button
         document.querySelector('.cta-button').addEventListener('click', function(e) {
             e.preventDefault();
