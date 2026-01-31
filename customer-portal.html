@@ -878,7 +878,7 @@
                     const phone = document.getElementById('phone').value;
 
                     // Check if email already exists
-                    const { data: existing } = await supabase
+                    const { data: existing } = await supabaseClient
                         .from('customers')
                         .select('email')
                         .eq('email', email)

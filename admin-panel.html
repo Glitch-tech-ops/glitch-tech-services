@@ -761,8 +761,8 @@
             try {
                 // Load all data
                 const [customersData, repairsData] = await Promise.all([
-                    supabase.from('customers').select('*'),
-                    supabase.from('repairs').select('*')
+                    supabaseClient.from('customers').select('*'),
+                    supabaseClient.from('repairs').select('*')
                 ]);
 
                 const customers = customersData.data || [];
