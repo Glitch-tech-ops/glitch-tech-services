@@ -1075,5 +1075,144 @@
             }
         });
     </script>
+
+    <!-- Glitch Tech Sound System -->
+    <script>
+        class GlitchTechSounds {
+            constructor() {
+                this.audioContext = null;
+                this.enabled = true;
+                this.volume = 0.3;
+                this.initialized = false;
+            }
+
+            init() {
+                if (this.initialized) return;
+                try {
+                    this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    this.initialized = true;
+                } catch (e) {
+                    this.enabled = false;
+                }
+            }
+
+            playClick() {
+                if (!this.enabled) return;
+                this.init();
+                const ctx = this.audioContext;
+                const now = ctx.currentTime;
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.frequency.setValueAtTime(800, now);
+                osc.frequency.exponentialRampToValueAtTime(600, now + 0.05);
+                gain.gain.setValueAtTime(this.volume * 0.5, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+                osc.start(now);
+                osc.stop(now + 0.1);
+            }
+
+            playHover() {
+                if (!this.enabled) return;
+                this.init();
+                const ctx = this.audioContext;
+                const now = ctx.currentTime;
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.frequency.setValueAtTime(400, now);
+                osc.frequency.exponentialRampToValueAtTime(500, now + 0.05);
+                gain.gain.setValueAtTime(this.volume * 0.2, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
+                osc.start(now);
+                osc.stop(now + 0.05);
+            }
+
+            playSuccess() {
+                if (!this.enabled) return;
+                this.init();
+                const ctx = this.audioContext;
+                const now = ctx.currentTime;
+                [600, 800].forEach((freq, i) => {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.frequency.setValueAtTime(freq, now + i * 0.1);
+                    gain.gain.setValueAtTime(this.volume * 0.4, now + i * 0.1);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + i * 0.1 + 0.2);
+                    osc.start(now + i * 0.1);
+                    osc.stop(now + i * 0.1 + 0.2);
+                });
+            }
+
+            playModalOpen() {
+                if (!this.enabled) return;
+                this.init();
+                const ctx = this.audioContext;
+                const now = ctx.currentTime;
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.frequency.setValueAtTime(300, now);
+                osc.frequency.exponentialRampToValueAtTime(800, now + 0.15);
+                gain.gain.setValueAtTime(this.volume * 0.3, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+                osc.start(now);
+                osc.stop(now + 0.15);
+            }
+
+            playModalClose() {
+                if (!this.enabled) return;
+                this.init();
+                const ctx = this.audioContext;
+                const now = ctx.currentTime;
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.frequency.setValueAtTime(800, now);
+                osc.frequency.exponentialRampToValueAtTime(300, now + 0.15);
+                gain.gain.setValueAtTime(this.volume * 0.3, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+                osc.start(now);
+                osc.stop(now + 0.15);
+            }
+        }
+
+        const glitchSounds = new GlitchTechSounds();
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('button, .cta-button, input[type="submit"]').forEach(el => {
+                el.addEventListener('click', () => glitchSounds.playClick());
+            });
+
+            document.querySelectorAll('a, .nav-link, .lang-link').forEach(el => {
+                el.addEventListener('mouseenter', () => glitchSounds.playHover());
+                el.addEventListener('click', () => glitchSounds.playClick());
+            });
+
+            document.querySelectorAll('.service-card').forEach(el => {
+                el.addEventListener('mouseenter', () => glitchSounds.playHover());
+            });
+
+            const originalOpenModal = window.openModal;
+            window.openModal = function(modalId) {
+                glitchSounds.playModalOpen();
+                originalOpenModal(modalId);
+            };
+
+            const originalCloseModal = window.closeModal;
+            window.closeModal = function(modalId) {
+                glitchSounds.playModalClose();
+                originalCloseModal(modalId);
+            };
+
+            console.log('🔊 ¡Sonidos Glitch Tech listos!');
+        });
+    </script>
 </body>
 </html>
