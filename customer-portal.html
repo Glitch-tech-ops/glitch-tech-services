@@ -29,7 +29,6 @@
             position: relative;
         }
 
-        /* Animated Background */
         .bg-animation {
             position: fixed;
             top: 0;
@@ -58,7 +57,6 @@
             z-index: 1;
         }
 
-        /* Header */
         header {
             padding: 20px 0;
             border-bottom: 2px solid var(--border-glow);
@@ -93,7 +91,7 @@
             text-shadow: 0 0 10px var(--neon-green);
         }
 
-        /* Login/Signup Form */
+        /* Auth Container */
         .auth-container {
             max-width: 450px;
             margin: 80px auto;
@@ -121,7 +119,9 @@
             font-size: 0.9rem;
         }
 
-        .form-group input {
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
             width: 100%;
             padding: 12px;
             background: rgba(0, 0, 0, 0.3);
@@ -129,9 +129,17 @@
             border-radius: 5px;
             color: #e0e0e0;
             font-size: 1rem;
+            font-family: 'IBM Plex Sans', sans-serif;
         }
 
-        .form-group input:focus {
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
             outline: none;
             border-color: var(--neon-green);
             box-shadow: 0 0 10px rgba(0, 255, 65, 0.3);
@@ -208,7 +216,7 @@
 
         .dashboard-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 20px;
             margin-bottom: 40px;
         }
@@ -235,8 +243,8 @@
             font-weight: 700;
         }
 
-        /* Repair Status */
-        .repair-section {
+        /* Sections */
+        .section {
             background: var(--card-bg);
             border: 2px solid var(--border-glow);
             border-radius: 10px;
@@ -244,12 +252,34 @@
             margin-bottom: 30px;
         }
 
-        .repair-section h2 {
+        .section h2 {
             font-family: 'Orbitron', sans-serif;
             color: var(--neon-green);
             margin-bottom: 20px;
         }
 
+        /* Book Repair Button */
+        .book-repair-btn {
+            padding: 15px 30px;
+            background: var(--neon-green);
+            color: var(--dark-bg);
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: 'Orbitron', sans-serif;
+            transition: all 0.3s;
+            display: inline-block;
+            margin-bottom: 30px;
+        }
+
+        .book-repair-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0, 255, 65, 0.5);
+        }
+
+        /* Repair Items */
         .repair-item {
             background: rgba(0, 0, 0, 0.3);
             border: 1px solid var(--border-glow);
@@ -455,34 +485,45 @@
             display: none !important;
         }
 
-        /* Demo Notice */
-        .demo-notice {
-            background: rgba(255, 193, 7, 0.1);
-            border: 2px solid rgba(255, 193, 7, 0.5);
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            overflow-y: auto;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            margin: 5% auto;
+            padding: 40px;
+            border: 2px solid var(--border-glow);
             border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 30px;
-            text-align: center;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
         }
 
-        .demo-notice h3 {
-            color: #ffc107;
-            margin-bottom: 10px;
+        .close-modal {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            font-size: 2rem;
+            font-weight: bold;
+            color: #888;
+            cursor: pointer;
+            transition: color 0.3s;
         }
 
-        .demo-notice p {
-            color: #b0b0b0;
-            margin-bottom: 15px;
-        }
-
-        .demo-credentials {
-            background: rgba(0, 0, 0, 0.3);
-            padding: 15px;
-            border-radius: 5px;
-            display: inline-block;
-        }
-
-        .demo-credentials strong {
+        .close-modal:hover {
             color: var(--neon-green);
         }
     </style>
@@ -500,15 +541,6 @@
     </header>
 
     <div class="container">
-        <!-- Demo Notice -->
-        <div class="demo-notice" id="demoNotice">
-            <h3>🚀 Demo Mode</h3>
-            <p>This is a demonstration of the customer portal. In production, customers would create accounts after booking a repair.</p>
-            <div class="demo-credentials">
-                <strong>Demo Login:</strong> demo@customer.com / password123
-            </div>
-        </div>
-
         <!-- Login/Signup Form -->
         <div class="auth-container" id="authContainer">
             <h2 id="authTitle">Customer Login</h2>
@@ -526,14 +558,14 @@
                     <input type="password" id="password" required placeholder="••••••••">
                 </div>
 
-                <div class="form-group" id="nameGroup" style="display:none;">
+                <div class="form-group hidden" id="nameGroup">
                     <label for="name">Full Name</label>
                     <input type="text" id="name" placeholder="John Doe">
                 </div>
 
-                <div class="form-group" id="phoneGroup" style="display:none;">
+                <div class="form-group hidden" id="phoneGroup">
                     <label for="phone">Phone Number</label>
-                    <input type="tel" id="phone" placeholder="(555) 123-4567">
+                    <input type="tel" id="phone" placeholder="(305) 555-1234">
                 </div>
 
                 <button type="submit" class="btn" id="authButton">Login</button>
@@ -552,6 +584,8 @@
                 <button class="logout-btn" id="logoutBtn">Logout</button>
             </div>
 
+            <button class="book-repair-btn" id="bookRepairBtn">📅 Book a Repair</button>
+
             <!-- Stats -->
             <div class="dashboard-grid">
                 <div class="stat-card">
@@ -569,18 +603,18 @@
             </div>
 
             <!-- Current Repairs -->
-            <div class="repair-section">
+            <div class="section">
                 <h2>Current Repairs</h2>
                 <div id="currentRepairs">
                     <div class="empty-state">
                         <div class="empty-state-icon">📭</div>
-                        <p>No active repairs. Contact us when you need help!</p>
+                        <p>No active repairs. Book one to get started!</p>
                     </div>
                 </div>
             </div>
 
             <!-- Messages -->
-            <div class="repair-section">
+            <div class="section">
                 <h2>Messages</h2>
                 <div class="messages-container" id="messagesContainer">
                     <div class="empty-state">
@@ -595,7 +629,7 @@
             </div>
 
             <!-- Repair History -->
-            <div class="repair-section">
+            <div class="section">
                 <h2>Repair History</h2>
                 <div id="repairHistory">
                     <div class="empty-state">
@@ -607,43 +641,91 @@
         </div>
     </div>
 
+    <!-- Book Repair Modal -->
+    <div class="modal" id="bookRepairModal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeBookingModal()">&times;</span>
+            <h2 style="font-family: 'Orbitron', sans-serif; color: var(--neon-green); margin-bottom: 20px;">Book a Repair</h2>
+            
+            <form id="bookingForm">
+                <div class="form-group">
+                    <label for="deviceType">Device Type *</label>
+                    <select id="deviceType" required>
+                        <option value="">Select device type...</option>
+                        <option value="laptop">Laptop</option>
+                        <option value="desktop">Desktop</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="brand">Brand/Model</label>
+                    <input type="text" id="brand" placeholder="e.g., Dell Latitude, HP Pavilion">
+                </div>
+
+                <div class="form-group">
+                    <label for="issue">What's the problem? *</label>
+                    <textarea id="issue" required placeholder="Describe what's wrong with your computer..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="serviceType">Service Needed *</label>
+                    <select id="serviceType" required>
+                        <option value="">Select service...</option>
+                        <option value="virus">Virus/Malware Removal ($50-80)</option>
+                        <option value="hardware">Hardware Repair ($60-150)</option>
+                        <option value="data">Data Recovery ($75-200)</option>
+                        <option value="tuneup">Performance Tune-Up ($40-60)</option>
+                        <option value="os">OS Installation ($60-100)</option>
+                        <option value="diagnostic">Diagnostic Only ($30)</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="urgency">How urgent is this?</label>
+                    <select id="urgency">
+                        <option value="normal">Normal (1-3 days)</option>
+                        <option value="urgent">Urgent (same day +$30)</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn">Submit Repair Request</button>
+            </form>
+        </div>
+    </div>
+
     <script>
-        // Simple demo data - in production this would use persistent storage
+        // Simple localStorage-based system
         let isLogin = true;
         let currentUser = null;
 
-        // Demo data
-        const demoUser = {
-            email: 'demo@customer.com',
-            password: 'password123',
-            name: 'Demo Customer',
-            phone: '(305) 555-1234',
-            repairs: [
-                {
-                    id: 'R001',
-                    device: 'Dell Latitude Laptop',
-                    issue: 'Running slow, possible virus',
-                    status: 'repairing', // received, diagnosing, repairing, ready, completed
-                    dateReceived: '2025-01-28',
-                    estimatedCost: '$75',
-                    actualCost: '$75',
-                    notes: 'Found malware and bloatware. Cleaning system now.'
-                }
-            ],
-            messages: [
-                {
-                    from: 'tech',
-                    content: 'Hi! I received your laptop. Starting diagnostics now.',
-                    time: '2025-01-28 10:30 AM'
-                },
-                {
-                    from: 'tech',
-                    content: 'Found the issue - malware and too many startup programs. Cleaning it up now. Should be ready by tomorrow!',
-                    time: '2025-01-28 2:15 PM'
-                }
-            ],
-            history: []
-        };
+        // Get all users from localStorage
+        function getAllUsers() {
+            return JSON.parse(localStorage.getItem('glitchTechUsers') || '[]');
+        }
+
+        // Save user to localStorage
+        function saveUser(user) {
+            const users = getAllUsers();
+            users.push(user);
+            localStorage.setItem('glitchTechUsers', JSON.stringify(users));
+        }
+
+        // Update user
+        function updateUser(user) {
+            const users = getAllUsers();
+            const index = users.findIndex(u => u.email === user.email);
+            if (index !== -1) {
+                users[index] = user;
+                localStorage.setItem('glitchTechUsers', JSON.stringify(users));
+            }
+        }
+
+        // Find user by email
+        function findUser(email) {
+            const users = getAllUsers();
+            return users.find(u => u.email === email);
+        }
 
         // DOM Elements
         const authContainer = document.getElementById('authContainer');
@@ -658,7 +740,6 @@
         const alertContainer = document.getElementById('alertContainer');
         const customerName = document.getElementById('customerName');
         const logoutBtn = document.getElementById('logoutBtn');
-        const demoNotice = document.getElementById('demoNotice');
 
         // Toggle between login and signup
         toggleLink.addEventListener('click', () => {
@@ -668,15 +749,15 @@
                 authButton.textContent = 'Login';
                 toggleText.textContent = "Don't have an account?";
                 toggleLink.textContent = 'Sign Up';
-                nameGroup.style.display = 'none';
-                phoneGroup.style.display = 'none';
+                nameGroup.classList.add('hidden');
+                phoneGroup.classList.add('hidden');
             } else {
                 authTitle.textContent = 'Create Account';
                 authButton.textContent = 'Sign Up';
                 toggleText.textContent = 'Already have an account?';
                 toggleLink.textContent = 'Login';
-                nameGroup.style.display = 'block';
-                phoneGroup.style.display = 'block';
+                nameGroup.classList.remove('hidden');
+                phoneGroup.classList.remove('hidden');
             }
         });
 
@@ -688,17 +769,47 @@
 
             if (isLogin) {
                 // Login
-                if (email === demoUser.email && password === demoUser.password) {
-                    currentUser = demoUser;
+                const user = findUser(email);
+                if (user && user.password === password) {
+                    currentUser = user;
                     showDashboard();
                 } else {
-                    showAlert('Invalid credentials. Try: demo@customer.com / password123', 'error');
+                    showAlert('Invalid email or password.', 'error');
                 }
             } else {
                 // Signup
                 const name = document.getElementById('name').value;
                 const phone = document.getElementById('phone').value;
-                showAlert('Account created! In production, you would receive a confirmation email.', 'success');
+                
+                if (findUser(email)) {
+                    showAlert('Account already exists with this email.', 'error');
+                    return;
+                }
+
+                // Generate verification code
+                const verificationCode = Math.floor(100000 + Math.random() * 900000);
+                
+                // Show verification prompt
+                const code = prompt(`A verification code has been sent to ${email}\n\nIn a real system, you'd receive an email. For demo purposes, your code is: ${verificationCode}\n\nPlease enter the code:`);
+                
+                if (!code || code !== verificationCode.toString()) {
+                    showAlert('Invalid verification code. Please try again.', 'error');
+                    return;
+                }
+
+                const newUser = {
+                    email: email,
+                    password: password,
+                    name: name,
+                    phone: phone,
+                    repairs: [],
+                    messages: [],
+                    history: [],
+                    verified: true
+                };
+
+                saveUser(newUser);
+                showAlert('Account created and verified! You can now login.', 'success');
                 setTimeout(() => {
                     isLogin = true;
                     toggleLink.click();
@@ -711,7 +822,6 @@
             currentUser = null;
             dashboard.style.display = 'none';
             authContainer.style.display = 'block';
-            demoNotice.style.display = 'block';
             document.getElementById('email').value = '';
             document.getElementById('password').value = '';
         });
@@ -727,7 +837,6 @@
         // Show dashboard
         function showDashboard() {
             authContainer.style.display = 'none';
-            demoNotice.style.display = 'none';
             dashboard.style.display = 'block';
             customerName.textContent = currentUser.name;
 
@@ -735,7 +844,7 @@
             const activeCount = currentUser.repairs.filter(r => r.status !== 'completed').length;
             const completedCount = currentUser.repairs.filter(r => r.status === 'completed').length;
             const totalSpent = currentUser.repairs.reduce((sum, r) => {
-                const cost = parseInt(r.actualCost.replace(/\D/g, ''));
+                const cost = parseInt((r.actualCost || r.estimatedCost || '0').replace(/\D/g, ''));
                 return sum + (r.status === 'completed' ? cost : 0);
             }, 0);
 
@@ -743,13 +852,9 @@
             document.getElementById('completedRepairs').textContent = completedCount;
             document.getElementById('totalSpent').textContent = `$${totalSpent}`;
 
-            // Load current repairs
+            // Load sections
             loadCurrentRepairs();
-            
-            // Load messages
             loadMessages();
-
-            // Load history
             loadHistory();
         }
 
@@ -762,7 +867,7 @@
                 container.innerHTML = `
                     <div class="empty-state">
                         <div class="empty-state-icon">📭</div>
-                        <p>No active repairs. Contact us when you need help!</p>
+                        <p>No active repairs. Book one to get started!</p>
                     </div>
                 `;
                 return;
@@ -776,20 +881,24 @@
                             <strong>Issue:</strong> ${repair.issue}
                         </div>
                         <div class="repair-info-item">
-                            <strong>Repair ID:</strong> ${repair.id}
+                            <strong>Service:</strong> ${repair.serviceType}
                         </div>
                         <div class="repair-info-item">
-                            <strong>Received:</strong> ${repair.dateReceived}
+                            <strong>Requested:</strong> ${repair.dateRequested}
                         </div>
                         <div class="repair-info-item">
-                            <strong>Cost:</strong> ${repair.estimatedCost}
+                            <strong>Estimate:</strong> ${repair.estimatedCost}
                         </div>
                     </div>
-                    ${repair.notes ? `<p style="color: #b0b0b0; margin-top: 10px;"><strong>Notes:</strong> ${repair.notes}</p>` : ''}
+                    ${repair.notes ? `<p style="color: #b0b0b0; margin-top: 10px;"><strong>Tech Notes:</strong> ${repair.notes}</p>` : ''}
                     
                     <div class="status-timeline">
-                        <div class="status-step ${repair.status === 'received' || repair.status === 'diagnosing' || repair.status === 'repairing' || repair.status === 'ready' ? 'completed' : ''}">
+                        <div class="status-step ${repair.status === 'pending' || repair.status === 'received' || repair.status === 'diagnosing' || repair.status === 'repairing' || repair.status === 'ready' ? 'completed' : ''}">
                             <div class="status-dot">✓</div>
+                            <div class="status-label">Pending</div>
+                        </div>
+                        <div class="status-step ${repair.status === 'received' || repair.status === 'diagnosing' || repair.status === 'repairing' || repair.status === 'ready' ? 'completed' : repair.status === 'pending' ? 'active' : ''}">
+                            <div class="status-dot">${repair.status === 'received' || repair.status === 'diagnosing' || repair.status === 'repairing' || repair.status === 'ready' ? '✓' : ''}</div>
                             <div class="status-label">Received</div>
                         </div>
                         <div class="status-step ${repair.status === 'diagnosing' || repair.status === 'repairing' || repair.status === 'ready' ? 'completed' : repair.status === 'received' ? 'active' : ''}">
@@ -802,7 +911,7 @@
                         </div>
                         <div class="status-step ${repair.status === 'ready' ? 'active' : ''}">
                             <div class="status-dot"></div>
-                            <div class="status-label">Ready for Pickup</div>
+                            <div class="status-label">Ready</div>
                         </div>
                     </div>
                 </div>
@@ -833,7 +942,6 @@
                 </div>
             `).join('');
 
-            // Scroll to bottom
             container.scrollTop = container.scrollHeight;
         }
 
@@ -859,18 +967,16 @@
                     time: time
                 });
 
+                updateUser(currentUser);
                 input.value = '';
                 loadMessages();
+            }
+        });
 
-                // Auto-reply from tech (demo)
-                setTimeout(() => {
-                    currentUser.messages.push({
-                        from: 'tech',
-                        content: 'Thanks for your message! I\'ll get back to you soon.',
-                        time: time
-                    });
-                    loadMessages();
-                }, 2000);
+        // Enter key sends message
+        document.getElementById('messageInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                document.getElementById('sendMessage').click();
             }
         });
 
@@ -897,10 +1003,10 @@
                             <strong>Issue:</strong> ${repair.issue}
                         </div>
                         <div class="repair-info-item">
-                            <strong>Repair ID:</strong> ${repair.id}
+                            <strong>Service:</strong> ${repair.serviceType}
                         </div>
                         <div class="repair-info-item">
-                            <strong>Date:</strong> ${repair.dateReceived}
+                            <strong>Date:</strong> ${repair.dateRequested}
                         </div>
                         <div class="repair-info-item">
                             <strong>Cost:</strong> ${repair.actualCost}
@@ -910,10 +1016,87 @@
             `).join('');
         }
 
-        // Allow Enter key to send message
-        document.getElementById('messageInput').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                document.getElementById('sendMessage').click();
+        // Book Repair
+        document.getElementById('bookRepairBtn').addEventListener('click', () => {
+            document.getElementById('bookRepairModal').style.display = 'block';
+        });
+
+        function closeBookingModal() {
+            document.getElementById('bookRepairModal').style.display = 'none';
+        }
+
+        // Handle booking form
+        document.getElementById('bookingForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const deviceType = document.getElementById('deviceType').value;
+            const brand = document.getElementById('brand').value;
+            const issue = document.getElementById('issue').value;
+            const serviceType = document.getElementById('serviceType').value;
+            const urgency = document.getElementById('urgency').value;
+
+            const newRepair = {
+                id: 'R' + Date.now(),
+                device: brand || deviceType,
+                issue: issue,
+                serviceType: serviceType,
+                urgency: urgency,
+                status: 'pending',
+                dateRequested: new Date().toLocaleDateString(),
+                estimatedCost: getEstimatedCost(serviceType, urgency),
+                notes: ''
+            };
+
+            currentUser.repairs.push(newRepair);
+            
+            // Add welcome message
+            const now = new Date();
+            const time = now.toLocaleString('en-US', { 
+                month: '2-digit', 
+                day: '2-digit', 
+                year: 'numeric',
+                hour: 'numeric',
+                minute: '2-digit',
+                hour12: true 
+            }).replace(',', '');
+
+            currentUser.messages.push({
+                from: 'tech',
+                content: `Thanks for booking! I received your repair request for ${deviceType} (${serviceType}). I'll review it and get back to you shortly!`,
+                time: time
+            });
+
+            updateUser(currentUser);
+            closeBookingModal();
+            showDashboard();
+            showAlert('Repair booked successfully! We\'ll be in touch soon.', 'success');
+
+            // Reset form
+            document.getElementById('bookingForm').reset();
+        });
+
+        function getEstimatedCost(serviceType, urgency) {
+            let cost = '';
+            switch(serviceType) {
+                case 'virus': cost = '$50-80'; break;
+                case 'hardware': cost = '$60-150'; break;
+                case 'data': cost = '$75-200'; break;
+                case 'tuneup': cost = '$40-60'; break;
+                case 'os': cost = '$60-100'; break;
+                case 'diagnostic': cost = '$30'; break;
+                default: cost = 'TBD';
+            }
+            if (urgency === 'urgent') {
+                cost += ' (+$30 rush)';
+            }
+            return cost;
+        }
+
+        // Close modal on outside click
+        window.addEventListener('click', (e) => {
+            const modal = document.getElementById('bookRepairModal');
+            if (e.target === modal) {
+                closeBookingModal();
             }
         });
     </script>
