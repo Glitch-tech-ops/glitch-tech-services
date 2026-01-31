@@ -720,7 +720,8 @@
         const SUPABASE_URL = 'https://vylmravtmtoykvejzooi.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ5bG1yYXZ0bXRveWt2ZWp6b29pIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk4MTkwMzIsImV4cCI6MjA4NTM5NTAzMn0.K5yIJjhsN6pf3Fvbh9DDrdbubCLdruJKXwbg1eZSA_o';
         
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const { createClient } = supabase;
+        const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         const ADMIN_PASSWORD = 'F20m13aco12ca34!';
         let currentRepair = null;

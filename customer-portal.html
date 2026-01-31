@@ -786,7 +786,8 @@
         const SUPABASE_URL = 'https://vylmravtmtoykvejzooi.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ5bG1yYXZ0bXRveWt2ZWp6b29pIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk4MTkwMzIsImV4cCI6MjA4NTM5NTAzMn0.K5yIJjhsN6pf3Fvbh9DDrdbubCLdruJKXwbg1eZSA_o';
         
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const { createClient } = supabase;
+        const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         let isLogin = true;
         let currentUser = null;
@@ -1255,13 +1256,13 @@
                     const fileExt = selectedFile.name.split('.').pop();
                     const fileName = `${currentUser.id}_${Date.now()}.${fileExt}`;
                     
-                    const { data: uploadData, error: uploadError } = await supabase.storage
+                    const { data: uploadData, error: uploadError } = await supabaseClient.storage
                         .from('repair-images')
                         .upload(fileName, selectedFile);
 
                     if (uploadError) throw uploadError;
 
-                    const { data: { publicUrl } } = supabase.storage
+                    const { data: { publicUrl } } = supabaseClient.storage
                         .from('repair-images')
                         .getPublicUrl(fileName);
 
