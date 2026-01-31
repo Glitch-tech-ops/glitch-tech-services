@@ -6,6 +6,7 @@
     <title>Admin Panel | Glitch Tech Services</title>
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%230a0e27'/%3E%3Cpath d='M30 20 L50 50 L30 80 L40 80 L60 50 L40 20 Z' fill='%2300ff41' opacity='0.8'/%3E%3Cpath d='M45 20 L65 50 L45 80 L55 80 L75 50 L55 20 Z' fill='%2300ff41'/%3E%3Ccircle cx='25' cy='25' r='3' fill='%2300ff41'/%3E%3Ccircle cx='75' cy='25' r='3' fill='%2300ff41'/%3E%3Ccircle cx='25' cy='75' r='3' fill='%2300ff41'/%3E%3Ccircle cx='75' cy='75' r='3' fill='%2300ff41'/%3E%3C/svg%3E">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=IBM+Plex+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         * {
             margin: 0;
@@ -51,7 +52,7 @@
         }
 
         .container {
-            max-width: 1400px;
+            max-width: 1600px;
             margin: 0 auto;
             padding: 20px;
             position: relative;
@@ -97,9 +98,14 @@
             transition: all 0.3s;
         }
 
-        .btn:hover {
+        .btn:hover:not(:disabled) {
             transform: translateY(-2px);
             box-shadow: 0 5px 20px rgba(0, 255, 65, 0.4);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
 
         .btn-secondary {
@@ -121,6 +127,8 @@
             border: 2px solid var(--border-glow);
             border-radius: 10px;
             padding: 40px;
+            position: relative;
+            z-index: 10;
         }
 
         .login-container h2 {
@@ -242,7 +250,7 @@
             background: var(--card-bg);
             border: 2px solid var(--border-glow);
             border-radius: 10px;
-            overflow: hidden;
+            overflow-x: auto;
         }
 
         table {
@@ -258,6 +266,7 @@
             font-family: 'Orbitron', sans-serif;
             font-size: 0.9rem;
             text-transform: uppercase;
+            white-space: nowrap;
         }
 
         td {
@@ -326,8 +335,17 @@
             box-shadow: 0 0 10px rgba(0, 255, 65, 0.5);
         }
 
-        .action-btn.danger {
-            background: var(--danger);
+        .thumbnail {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 5px;
+            border: 2px solid var(--border-glow);
+            cursor: pointer;
+        }
+
+        .thumbnail:hover {
+            border-color: var(--neon-green);
         }
 
         /* Modal */
@@ -351,7 +369,7 @@
             border: 2px solid var(--border-glow);
             border-radius: 10px;
             width: 90%;
-            max-width: 700px;
+            max-width: 800px;
             max-height: 80vh;
             overflow-y: auto;
             position: relative;
@@ -423,6 +441,19 @@
             color: var(--neon-green);
         }
 
+        .repair-image-large {
+            max-width: 100%;
+            max-height: 400px;
+            border-radius: 8px;
+            border: 2px solid var(--border-glow);
+            margin: 15px 0;
+            cursor: pointer;
+        }
+
+        .repair-image-large:hover {
+            border-color: var(--neon-green);
+        }
+
         .messages-box {
             background: rgba(0, 0, 0, 0.3);
             border: 1px solid var(--border-glow);
@@ -461,6 +492,27 @@
             color: var(--neon-green);
             font-weight: 600;
         }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--neon-green);
+        }
+
+        .spinner {
+            border: 3px solid rgba(0, 255, 65, 0.3);
+            border-top: 3px solid var(--neon-green);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
@@ -473,7 +525,7 @@
         <form id="loginForm">
             <div class="form-group">
                 <label for="adminPassword">Admin Password</label>
-                <input type="password" id="adminPassword" required placeholder="Enter admin password">
+                <input type="password" id="adminPassword" required placeholder="Enter admin password" autocomplete="current-password">
             </div>
             <button type="submit" class="btn" style="width: 100%;">Login</button>
         </form>
@@ -527,10 +579,11 @@
                     <table>
                         <thead>
                             <tr>
-                                <th>ID</th>
+                                <th>Image</th>
+                                <th>Repair #</th>
                                 <th>Customer</th>
                                 <th>Device</th>
-                                <th>Issue</th>
+                                <th>Service</th>
                                 <th>Status</th>
                                 <th>Date</th>
                                 <th>Cost</th>
@@ -539,10 +592,10 @@
                         </thead>
                         <tbody id="repairsTableBody">
                             <tr>
-                                <td colspan="8">
-                                    <div class="empty-state">
-                                        <div class="empty-state-icon">📋</div>
-                                        <p>No repairs yet. Customers will appear here when they book repairs.</p>
+                                <td colspan="9">
+                                    <div class="loading">
+                                        <div class="spinner"></div>
+                                        Loading repairs...
                                     </div>
                                 </td>
                             </tr>
@@ -562,15 +615,15 @@
                                 <th>Phone</th>
                                 <th>Total Repairs</th>
                                 <th>Total Spent</th>
-                                <th>Actions</th>
+                                <th>Joined</th>
                             </tr>
                         </thead>
                         <tbody id="customersTableBody">
                             <tr>
                                 <td colspan="6">
-                                    <div class="empty-state">
-                                        <div class="empty-state-icon">👥</div>
-                                        <p>No customers yet.</p>
+                                    <div class="loading">
+                                        <div class="spinner"></div>
+                                        Loading customers...
                                     </div>
                                 </td>
                             </tr>
@@ -617,11 +670,14 @@
             </div>
 
             <div class="customer-detail">
+                <p><strong>Repair #:</strong> <span id="modalRepairNumber"></span></p>
                 <p><strong>Device:</strong> <span id="modalDevice"></span></p>
                 <p><strong>Issue:</strong> <span id="modalIssue"></span></p>
                 <p><strong>Service:</strong> <span id="modalService"></span></p>
                 <p><strong>Requested:</strong> <span id="modalDate"></span></p>
             </div>
+
+            <div id="modalImageContainer"></div>
 
             <form id="editRepairForm">
                 <div class="form-group">
@@ -654,30 +710,20 @@
                     <textarea id="newMessage" placeholder="Type your message..."></textarea>
                 </div>
 
-                <button type="submit" class="btn" style="width: 100%;">Save Changes & Send Message</button>
+                <button type="submit" class="btn" style="width: 100%;" id="saveRepairBtn">Save Changes & Send Message</button>
             </form>
         </div>
     </div>
 
     <script>
-        const ADMIN_PASSWORD = 'F20m13aco12ca34!'; // Admin password
-        let currentRepairId = null;
-        let currentCustomerEmail = null;
+        // Supabase Configuration
+        const SUPABASE_URL = 'https://vylmravtmtoykvejzooi.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ5bG1yYXZ0bXRveWt2ZWp6b29pIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk4MTkwMzIsImV4cCI6MjA4NTM5NTAzMn0.K5yIJjhsN6pf3Fvbh9DDrdbubCLdruJKXwbg1eZSA_o';
+        
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // Get all users
-        function getAllUsers() {
-            return JSON.parse(localStorage.getItem('glitchTechUsers') || '[]');
-        }
-
-        // Update user
-        function updateUser(user) {
-            const users = getAllUsers();
-            const index = users.findIndex(u => u.email === user.email);
-            if (index !== -1) {
-                users[index] = user;
-                localStorage.setItem('glitchTechUsers', JSON.stringify(users));
-            }
-        }
+        const ADMIN_PASSWORD = 'F20m13aco12ca34!';
+        let currentRepair = null;
 
         // Login
         document.getElementById('loginForm').addEventListener('submit', (e) => {
@@ -702,70 +748,58 @@
 
         // Switch tabs
         function switchTab(tab) {
-            // Update tab buttons
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             event.target.classList.add('active');
 
-            // Update content
             document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
             document.getElementById(tab + 'Tab').classList.add('active');
         }
 
         // Load dashboard
-        function loadDashboard() {
-            const users = getAllUsers();
-            
-            // Calculate stats
-            let totalRepairs = 0;
-            let pendingCount = 0;
-            let activeCount = 0;
-            let totalRev = 0;
+        async function loadDashboard() {
+            try {
+                // Load all data
+                const [customersData, repairsData] = await Promise.all([
+                    supabase.from('customers').select('*'),
+                    supabase.from('repairs').select('*')
+                ]);
 
-            users.forEach(user => {
-                totalRepairs += user.repairs.length;
-                user.repairs.forEach(repair => {
-                    if (repair.status === 'pending') pendingCount++;
-                    if (repair.status !== 'pending' && repair.status !== 'completed') activeCount++;
-                    if (repair.status === 'completed') {
-                        const cost = parseInt((repair.actualCost || repair.estimatedCost || '0').replace(/\D/g, ''));
-                        totalRev += cost;
-                    }
-                });
-            });
+                const customers = customersData.data || [];
+                const repairs = repairsData.data || [];
 
-            // Update stats
-            document.getElementById('totalCustomers').textContent = users.length;
-            document.getElementById('pendingRepairs').textContent = pendingCount;
-            document.getElementById('activeRepairs').textContent = activeCount;
-            document.getElementById('totalRevenue').textContent = `$${totalRev}`;
+                // Calculate stats
+                const pendingCount = repairs.filter(r => r.status === 'pending').length;
+                const activeCount = repairs.filter(r => r.status !== 'pending' && r.status !== 'completed').length;
+                const totalRev = repairs
+                    .filter(r => r.status === 'completed')
+                    .reduce((sum, r) => {
+                        const cost = parseInt((r.actual_cost || r.estimated_cost || '0').replace(/\D/g, ''));
+                        return sum + cost;
+                    }, 0);
 
-            // Load tables
-            loadRepairsTable();
-            loadCustomersTable();
-            loadRevenueStats();
+                // Update stats
+                document.getElementById('totalCustomers').textContent = customers.length;
+                document.getElementById('pendingRepairs').textContent = pendingCount;
+                document.getElementById('activeRepairs').textContent = activeCount;
+                document.getElementById('totalRevenue').textContent = `$${totalRev}`;
+
+                // Load tables
+                await loadRepairsTable(repairs, customers);
+                loadCustomersTable(customers, repairs);
+                loadRevenueStats(repairs);
+            } catch (error) {
+                console.error('Error loading dashboard:', error);
+            }
         }
 
         // Load repairs table
-        function loadRepairsTable() {
-            const users = getAllUsers();
+        async function loadRepairsTable(repairs, customers) {
             const tbody = document.getElementById('repairsTableBody');
             
-            let allRepairs = [];
-            users.forEach(user => {
-                user.repairs.forEach(repair => {
-                    allRepairs.push({
-                        ...repair,
-                        customerName: user.name,
-                        customerEmail: user.email,
-                        customerPhone: user.phone
-                    });
-                });
-            });
-
-            if (allRepairs.length === 0) {
+            if (repairs.length === 0) {
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="8">
+                        <td colspan="9">
                             <div class="empty-state">
                                 <div class="empty-state-icon">📋</div>
                                 <p>No repairs yet. Customers will appear here when they book repairs.</p>
@@ -776,28 +810,38 @@
                 return;
             }
 
-            tbody.innerHTML = allRepairs.map(repair => `
-                <tr>
-                    <td><strong>${repair.id}</strong></td>
-                    <td>${repair.customerName}</td>
-                    <td>${repair.device}</td>
-                    <td>${repair.issue.substring(0, 50)}${repair.issue.length > 50 ? '...' : ''}</td>
-                    <td><span class="status-badge status-${repair.status}">${repair.status}</span></td>
-                    <td>${repair.dateRequested}</td>
-                    <td>${repair.actualCost || repair.estimatedCost}</td>
-                    <td>
-                        <button class="action-btn" onclick="editRepair('${repair.customerEmail}', '${repair.id}')">Edit</button>
-                    </td>
-                </tr>
-            `).join('');
+            // Sort by date (newest first)
+            repairs.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
+            tbody.innerHTML = repairs.map(repair => {
+                const customer = customers.find(c => c.id === repair.customer_id) || {};
+                return `
+                    <tr>
+                        <td>
+                            ${repair.image_url ? 
+                                `<img src="${repair.image_url}" class="thumbnail" onclick="window.open('${repair.image_url}', '_blank')" alt="Device photo">` : 
+                                '📸'}
+                        </td>
+                        <td><strong>${repair.repair_number}</strong></td>
+                        <td>${customer.name || 'Unknown'}</td>
+                        <td>${repair.device_type}${repair.brand ? ' - ' + repair.brand : ''}</td>
+                        <td>${repair.service_type}</td>
+                        <td><span class="status-badge status-${repair.status}">${repair.status}</span></td>
+                        <td>${new Date(repair.date_requested).toLocaleDateString()}</td>
+                        <td>${repair.actual_cost || repair.estimated_cost}</td>
+                        <td>
+                            <button class="action-btn" onclick="editRepair('${repair.id}')">Edit</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
         }
 
         // Load customers table
-        function loadCustomersTable() {
-            const users = getAllUsers();
+        function loadCustomersTable(customers, repairs) {
             const tbody = document.getElementById('customersTableBody');
 
-            if (users.length === 0) {
+            if (customers.length === 0) {
                 tbody.innerHTML = `
                     <tr>
                         <td colspan="6">
@@ -811,33 +855,30 @@
                 return;
             }
 
-            tbody.innerHTML = users.map(user => {
-                const totalSpent = user.repairs.reduce((sum, r) => {
-                    if (r.status === 'completed') {
-                        const cost = parseInt((r.actualCost || r.estimatedCost || '0').replace(/\D/g, ''));
+            tbody.innerHTML = customers.map(customer => {
+                const customerRepairs = repairs.filter(r => r.customer_id === customer.id);
+                const totalSpent = customerRepairs
+                    .filter(r => r.status === 'completed')
+                    .reduce((sum, r) => {
+                        const cost = parseInt((r.actual_cost || r.estimated_cost || '0').replace(/\D/g, ''));
                         return sum + cost;
-                    }
-                    return sum;
-                }, 0);
+                    }, 0);
 
                 return `
                     <tr>
-                        <td>${user.name}</td>
-                        <td>${user.email}</td>
-                        <td>${user.phone || 'N/A'}</td>
-                        <td>${user.repairs.length}</td>
+                        <td>${customer.name}</td>
+                        <td>${customer.email}</td>
+                        <td>${customer.phone || 'N/A'}</td>
+                        <td>${customerRepairs.length}</td>
                         <td>$${totalSpent}</td>
-                        <td>
-                            <button class="action-btn" onclick="viewCustomer('${user.email}')">View</button>
-                        </td>
+                        <td>${new Date(customer.created_at).toLocaleDateString()}</td>
                     </tr>
                 `;
             }).join('');
         }
 
         // Load revenue stats
-        function loadRevenueStats() {
-            const users = getAllUsers();
+        function loadRevenueStats(repairs) {
             const now = new Date();
             const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
             const oneMonthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
@@ -847,19 +888,17 @@
             let completedCount = 0;
             let totalRev = 0;
 
-            users.forEach(user => {
-                user.repairs.forEach(repair => {
-                    if (repair.status === 'completed') {
-                        const cost = parseInt((repair.actualCost || repair.estimatedCost || '0').replace(/\D/g, ''));
-                        const repairDate = new Date(repair.dateRequested);
-                        
-                        totalRev += cost;
-                        completedCount++;
+            repairs.forEach(repair => {
+                if (repair.status === 'completed') {
+                    const cost = parseInt((repair.actual_cost || repair.estimated_cost || '0').replace(/\D/g, ''));
+                    const repairDate = new Date(repair.date_requested);
+                    
+                    totalRev += cost;
+                    completedCount++;
 
-                        if (repairDate >= oneWeekAgo) weekRev += cost;
-                        if (repairDate >= oneMonthAgo) monthRev += cost;
-                    }
-                });
+                    if (repairDate >= oneWeekAgo) weekRev += cost;
+                    if (repairDate >= oneMonthAgo) monthRev += cost;
+                }
             });
 
             document.getElementById('weekRevenue').textContent = `$${weekRev}`;
@@ -869,43 +908,82 @@
         }
 
         // Edit repair
-        function editRepair(customerEmail, repairId) {
-            currentCustomerEmail = customerEmail;
-            currentRepairId = repairId;
+        async function editRepair(repairId) {
+            try {
+                // Get repair with customer data
+                const { data: repair, error: repairError } = await supabase
+                    .from('repairs')
+                    .select('*')
+                    .eq('id', repairId)
+                    .single();
 
-            const users = getAllUsers();
-            const customer = users.find(u => u.email === customerEmail);
-            const repair = customer.repairs.find(r => r.id === repairId);
+                if (repairError) throw repairError;
 
-            // Fill modal
-            document.getElementById('modalCustomerName').textContent = customer.name;
-            document.getElementById('modalCustomerEmail').textContent = customer.email;
-            document.getElementById('modalCustomerPhone').textContent = customer.phone || 'N/A';
-            document.getElementById('modalDevice').textContent = repair.device;
-            document.getElementById('modalIssue').textContent = repair.issue;
-            document.getElementById('modalService').textContent = repair.serviceType;
-            document.getElementById('modalDate').textContent = repair.dateRequested;
-            document.getElementById('repairStatus').value = repair.status;
-            document.getElementById('actualCost').value = repair.actualCost || '';
-            document.getElementById('techNotes').value = repair.notes || '';
+                const { data: customer, error: customerError } = await supabase
+                    .from('customers')
+                    .select('*')
+                    .eq('id', repair.customer_id)
+                    .single();
 
-            // Load messages
-            const messagesBox = document.getElementById('modalMessages');
-            if (customer.messages.length === 0) {
-                messagesBox.innerHTML = '<p style="color: #888; text-align: center;">No messages yet.</p>';
-            } else {
-                messagesBox.innerHTML = customer.messages.map(msg => `
-                    <div class="message ${msg.from === 'tech' ? 'from-tech' : 'from-customer'}">
-                        <div class="message-header">
-                            <span class="message-sender">${msg.from === 'tech' ? 'You (Tech)' : customer.name}</span>
-                            <span>${msg.time}</span>
+                if (customerError) throw customerError;
+
+                // Get messages
+                const { data: messages } = await supabase
+                    .from('messages')
+                    .select('*')
+                    .eq('repair_id', repairId)
+                    .order('created_at', { ascending: true });
+
+                currentRepair = repair;
+
+                // Fill modal
+                document.getElementById('modalCustomerName').textContent = customer.name;
+                document.getElementById('modalCustomerEmail').textContent = customer.email;
+                document.getElementById('modalCustomerPhone').textContent = customer.phone || 'N/A';
+                document.getElementById('modalRepairNumber').textContent = repair.repair_number;
+                document.getElementById('modalDevice').textContent = `${repair.device_type}${repair.brand ? ' - ' + repair.brand : ''}`;
+                document.getElementById('modalIssue').textContent = repair.issue;
+                document.getElementById('modalService').textContent = repair.service_type;
+                document.getElementById('modalDate').textContent = new Date(repair.date_requested).toLocaleDateString();
+                document.getElementById('repairStatus').value = repair.status;
+                document.getElementById('actualCost').value = repair.actual_cost || '';
+                document.getElementById('techNotes').value = repair.notes || '';
+
+                // Show image if exists
+                const imageContainer = document.getElementById('modalImageContainer');
+                if (repair.image_url) {
+                    imageContainer.innerHTML = `
+                        <div class="customer-detail">
+                            <strong>Device Photo:</strong><br>
+                            <img src="${repair.image_url}" class="repair-image-large" onclick="window.open('${repair.image_url}', '_blank')" alt="Device photo">
                         </div>
-                        <div>${msg.content}</div>
-                    </div>
-                `).join('');
-            }
+                    `;
+                } else {
+                    imageContainer.innerHTML = '';
+                }
 
-            document.getElementById('editRepairModal').style.display = 'block';
+                // Load messages
+                const messagesBox = document.getElementById('modalMessages');
+                if (!messages || messages.length === 0) {
+                    messagesBox.innerHTML = '<p style="color: #888; text-align: center;">No messages yet.</p>';
+                } else {
+                    messagesBox.innerHTML = messages.map(msg => `
+                        <div class="message ${msg.from_type === 'tech' ? 'from-tech' : 'from-customer'}">
+                            <div class="message-header">
+                                <span class="message-sender">${msg.from_type === 'tech' ? 'You (Tech)' : customer.name}</span>
+                                <span>${new Date(msg.created_at).toLocaleString()}</span>
+                            </div>
+                            <div>${msg.content}</div>
+                        </div>
+                    `).join('');
+                    messagesBox.scrollTop = messagesBox.scrollHeight;
+                }
+
+                document.getElementById('editRepairModal').style.display = 'block';
+            } catch (error) {
+                console.error('Error loading repair:', error);
+                alert('Error loading repair details');
+            }
         }
 
         // Close edit modal
@@ -913,66 +991,68 @@
             document.getElementById('editRepairModal').style.display = 'none';
             document.getElementById('newMessage').value = '';
             document.getElementById('modalAlert').innerHTML = '';
+            currentRepair = null;
         }
 
         // Save repair changes
-        document.getElementById('editRepairForm').addEventListener('submit', (e) => {
+        document.getElementById('editRepairForm').addEventListener('submit', async (e) => {
             e.preventDefault();
 
-            const users = getAllUsers();
-            const customer = users.find(u => u.email === currentCustomerEmail);
-            const repair = customer.repairs.find(r => r.id === currentRepairId);
+            const saveBtn = document.getElementById('saveRepairBtn');
+            saveBtn.disabled = true;
+            saveBtn.textContent = 'Saving...';
 
-            // Update repair
-            repair.status = document.getElementById('repairStatus').value;
-            repair.actualCost = document.getElementById('actualCost').value || repair.estimatedCost;
-            repair.notes = document.getElementById('techNotes').value;
+            try {
+                const status = document.getElementById('repairStatus').value;
+                const actualCost = document.getElementById('actualCost').value;
+                const notes = document.getElementById('techNotes').value;
+                const newMessage = document.getElementById('newMessage').value.trim();
 
-            // Add message if provided
-            const newMsg = document.getElementById('newMessage').value.trim();
-            if (newMsg) {
-                const now = new Date();
-                const time = now.toLocaleString('en-US', { 
-                    month: '2-digit', 
-                    day: '2-digit', 
-                    year: 'numeric',
-                    hour: 'numeric',
-                    minute: '2-digit',
-                    hour12: true 
-                }).replace(',', '');
+                // Update repair
+                const { error: updateError } = await supabase
+                    .from('repairs')
+                    .update({
+                        status: status,
+                        actual_cost: actualCost || null,
+                        notes: notes || null,
+                        date_completed: status === 'completed' ? new Date().toISOString() : null
+                    })
+                    .eq('id', currentRepair.id);
 
-                customer.messages.push({
-                    from: 'tech',
-                    content: newMsg,
-                    time: time
-                });
+                if (updateError) throw updateError;
+
+                // Add message if provided
+                if (newMessage) {
+                    const { error: messageError } = await supabase
+                        .from('messages')
+                        .insert([{
+                            customer_id: currentRepair.customer_id,
+                            repair_id: currentRepair.id,
+                            from_type: 'tech',
+                            content: newMessage
+                        }]);
+
+                    if (messageError) throw messageError;
+                }
+
+                document.getElementById('modalAlert').innerHTML = '<div class="alert success">✅ Changes saved!</div>';
+                
+                setTimeout(() => {
+                    closeEditModal();
+                    refreshData();
+                }, 1500);
+            } catch (error) {
+                console.error('Error saving repair:', error);
+                document.getElementById('modalAlert').innerHTML = '<div class="alert error">Error saving changes: ' + error.message + '</div>';
+            } finally {
+                saveBtn.disabled = false;
+                saveBtn.textContent = 'Save Changes & Send Message';
             }
-
-            updateUser(customer);
-            
-            document.getElementById('modalAlert').innerHTML = '<div class="alert success">✅ Changes saved!</div>';
-            setTimeout(() => {
-                closeEditModal();
-                loadDashboard();
-            }, 1500);
         });
 
-        // View customer
-        function viewCustomer(email) {
-            const users = getAllUsers();
-            const customer = users.find(u => u.email === email);
-            
-            if (customer.repairs.length > 0) {
-                editRepair(email, customer.repairs[0].id);
-            } else {
-                alert('Customer has no repairs yet.');
-            }
-        }
-
         // Refresh data
-        function refreshData() {
+        async function refreshData() {
             loadDashboard();
-            alert('Data refreshed!');
         }
 
         // Close modal on outside click

@@ -6,6 +6,7 @@
     <title>Customer Portal | Glitch Tech Services</title>
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%230a0e27'/%3E%3Cpath d='M30 20 L50 50 L30 80 L40 80 L60 50 L40 20 Z' fill='%2300ff41' opacity='0.8'/%3E%3Cpath d='M45 20 L65 50 L45 80 L55 80 L75 50 L55 20 Z' fill='%2300ff41'/%3E%3Ccircle cx='25' cy='25' r='3' fill='%2300ff41'/%3E%3Ccircle cx='75' cy='25' r='3' fill='%2300ff41'/%3E%3Ccircle cx='25' cy='75' r='3' fill='%2300ff41'/%3E%3Ccircle cx='75' cy='75' r='3' fill='%2300ff41'/%3E%3C/svg%3E">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=IBM+Plex+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         * {
             margin: 0;
@@ -91,7 +92,6 @@
             text-shadow: 0 0 10px var(--neon-green);
         }
 
-        /* Auth Container */
         .auth-container {
             max-width: 450px;
             margin: 80px auto;
@@ -99,6 +99,8 @@
             border: 2px solid var(--border-glow);
             border-radius: 10px;
             padding: 40px;
+            position: relative;
+            z-index: 10;
         }
 
         .auth-container h2 {
@@ -145,6 +147,43 @@
             box-shadow: 0 0 10px rgba(0, 255, 65, 0.3);
         }
 
+        .file-upload-area {
+            border: 2px dashed var(--border-glow);
+            border-radius: 8px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .file-upload-area:hover {
+            border-color: var(--neon-green);
+            background: rgba(0, 255, 65, 0.05);
+        }
+
+        .file-upload-area.drag-over {
+            border-color: var(--neon-green);
+            background: rgba(0, 255, 65, 0.1);
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+
+        .file-preview {
+            margin-top: 15px;
+            max-width: 100%;
+        }
+
+        .file-preview img {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 8px;
+            border: 2px solid var(--border-glow);
+        }
+
         .btn {
             width: 100%;
             padding: 14px;
@@ -159,9 +198,14 @@
             font-family: 'Orbitron', sans-serif;
         }
 
-        .btn:hover {
+        .btn:hover:not(:disabled) {
             transform: translateY(-2px);
             box-shadow: 0 5px 20px rgba(0, 255, 65, 0.4);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
 
         .toggle-auth {
@@ -180,7 +224,6 @@
             text-decoration: underline;
         }
 
-        /* Dashboard */
         .dashboard {
             display: none;
             padding: 40px 0;
@@ -243,7 +286,6 @@
             font-weight: 700;
         }
 
-        /* Sections */
         .section {
             background: var(--card-bg);
             border: 2px solid var(--border-glow);
@@ -258,7 +300,6 @@
             margin-bottom: 20px;
         }
 
-        /* Book Repair Button */
         .book-repair-btn {
             padding: 15px 30px;
             background: var(--neon-green);
@@ -279,7 +320,6 @@
             box-shadow: 0 5px 20px rgba(0, 255, 65, 0.5);
         }
 
-        /* Repair Items */
         .repair-item {
             background: rgba(0, 0, 0, 0.3);
             border: 1px solid var(--border-glow);
@@ -292,6 +332,19 @@
             color: var(--neon-green);
             margin-bottom: 10px;
             font-size: 1.1rem;
+        }
+
+        .repair-image {
+            max-width: 200px;
+            max-height: 200px;
+            border-radius: 8px;
+            border: 2px solid var(--border-glow);
+            margin: 10px 0;
+            cursor: pointer;
+        }
+
+        .repair-image:hover {
+            border-color: var(--neon-green);
         }
 
         .repair-info {
@@ -309,7 +362,6 @@
             color: #888;
         }
 
-        /* Status Timeline */
         .status-timeline {
             display: flex;
             justify-content: space-between;
@@ -372,7 +424,6 @@
             color: var(--neon-green);
         }
 
-        /* Messages */
         .messages-container {
             background: rgba(0, 0, 0, 0.3);
             border: 1px solid var(--border-glow);
@@ -461,7 +512,6 @@
             margin-bottom: 20px;
         }
 
-        /* Alert */
         .alert {
             padding: 15px;
             border-radius: 8px;
@@ -481,11 +531,16 @@
             color: var(--neon-green);
         }
 
+        .alert.info {
+            background: rgba(33, 150, 243, 0.1);
+            border-color: #2196f3;
+            color: #64b5f6;
+        }
+
         .hidden {
             display: none !important;
         }
 
-        /* Modal */
         .modal {
             display: none;
             position: fixed;
@@ -525,6 +580,27 @@
 
         .close-modal:hover {
             color: var(--neon-green);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: var(--neon-green);
+        }
+
+        .spinner {
+            border: 3px solid rgba(0, 255, 65, 0.3);
+            border-top: 3px solid var(--neon-green);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
     </style>
 </head>
@@ -606,9 +682,9 @@
             <div class="section">
                 <h2>Current Repairs</h2>
                 <div id="currentRepairs">
-                    <div class="empty-state">
-                        <div class="empty-state-icon">📭</div>
-                        <p>No active repairs. Book one to get started!</p>
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        Loading repairs...
                     </div>
                 </div>
             </div>
@@ -617,9 +693,9 @@
             <div class="section">
                 <h2>Messages</h2>
                 <div class="messages-container" id="messagesContainer">
-                    <div class="empty-state">
-                        <div class="empty-state-icon">💬</div>
-                        <p>No messages yet.</p>
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        Loading messages...
                     </div>
                 </div>
                 <div class="message-form">
@@ -632,9 +708,9 @@
             <div class="section">
                 <h2>Repair History</h2>
                 <div id="repairHistory">
-                    <div class="empty-state">
-                        <div class="empty-state-icon">📋</div>
-                        <p>No repair history yet.</p>
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        Loading history...
                     </div>
                 </div>
             </div>
@@ -671,13 +747,13 @@
                     <label for="serviceType">Service Needed *</label>
                     <select id="serviceType" required>
                         <option value="">Select service...</option>
-                        <option value="virus">Virus/Malware Removal ($50-80)</option>
-                        <option value="hardware">Hardware Repair ($60-150)</option>
-                        <option value="data">Data Recovery ($75-200)</option>
-                        <option value="tuneup">Performance Tune-Up ($40-60)</option>
-                        <option value="os">OS Installation ($60-100)</option>
-                        <option value="diagnostic">Diagnostic Only ($30)</option>
-                        <option value="other">Other</option>
+                        <option value="Virus/Malware Removal">Virus/Malware Removal ($50-80)</option>
+                        <option value="Hardware Repair">Hardware Repair ($60-150)</option>
+                        <option value="Data Recovery">Data Recovery ($75-200)</option>
+                        <option value="Performance Tune-Up">Performance Tune-Up ($40-60)</option>
+                        <option value="OS Installation">OS Installation ($60-100)</option>
+                        <option value="Diagnostic Only">Diagnostic Only ($30)</option>
+                        <option value="Other">Other</option>
                     </select>
                 </div>
 
@@ -689,43 +765,32 @@
                     </select>
                 </div>
 
-                <button type="submit" class="btn">Submit Repair Request</button>
+                <div class="form-group">
+                    <label>Upload Photo of Device (Optional)</label>
+                    <div class="file-upload-area" id="fileUploadArea">
+                        <div class="upload-icon">📸</div>
+                        <p>Click or drag image here</p>
+                        <p style="font-size: 0.8rem; color: #666; margin-top: 5px;">Helps us diagnose the issue</p>
+                        <input type="file" id="deviceImage" accept="image/*" style="display: none;">
+                    </div>
+                    <div class="file-preview" id="filePreview"></div>
+                </div>
+
+                <button type="submit" class="btn" id="submitBookingBtn">Submit Repair Request</button>
             </form>
         </div>
     </div>
 
     <script>
-        // Simple localStorage-based system
+        // Supabase Configuration
+        const SUPABASE_URL = 'https://vylmravtmtoykvejzooi.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ5bG1yYXZ0bXRveWt2ZWp6b29pIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk4MTkwMzIsImV4cCI6MjA4NTM5NTAzMn0.K5yIJjhsN6pf3Fvbh9DDrdbubCLdruJKXwbg1eZSA_o';
+        
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
         let isLogin = true;
         let currentUser = null;
-
-        // Get all users from localStorage
-        function getAllUsers() {
-            return JSON.parse(localStorage.getItem('glitchTechUsers') || '[]');
-        }
-
-        // Save user to localStorage
-        function saveUser(user) {
-            const users = getAllUsers();
-            users.push(user);
-            localStorage.setItem('glitchTechUsers', JSON.stringify(users));
-        }
-
-        // Update user
-        function updateUser(user) {
-            const users = getAllUsers();
-            const index = users.findIndex(u => u.email === user.email);
-            if (index !== -1) {
-                users[index] = user;
-                localStorage.setItem('glitchTechUsers', JSON.stringify(users));
-            }
-        }
-
-        // Find user by email
-        function findUser(email) {
-            const users = getAllUsers();
-            return users.find(u => u.email === email);
-        }
+        let selectedFile = null;
 
         // DOM Elements
         const authContainer = document.getElementById('authContainer');
@@ -740,6 +805,15 @@
         const alertContainer = document.getElementById('alertContainer');
         const customerName = document.getElementById('customerName');
         const logoutBtn = document.getElementById('logoutBtn');
+
+        // Check if user is already logged in
+        window.addEventListener('load', () => {
+            const savedUser = localStorage.getItem('glitchTechUser');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                showDashboard();
+            }
+        });
 
         // Toggle between login and signup
         toggleLink.addEventListener('click', () => {
@@ -762,64 +836,110 @@
         });
 
         // Handle auth form
-        authForm.addEventListener('submit', (e) => {
+        authForm.addEventListener('submit', async (e) => {
             e.preventDefault();
+            authButton.disabled = true;
+            authButton.textContent = 'Processing...';
+
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
 
-            if (isLogin) {
-                // Login
-                const user = findUser(email);
-                if (user && user.password === password) {
-                    currentUser = user;
+            try {
+                if (isLogin) {
+                    // Login
+                    const { data, error } = await supabase
+                        .from('customers')
+                        .select('*')
+                        .eq('email', email)
+                        .single();
+
+                    if (error || !data) {
+                        showAlert('Invalid email or password.', 'error');
+                        authButton.disabled = false;
+                        authButton.textContent = 'Login';
+                        return;
+                    }
+
+                    // Simple password check (in production, use proper hashing)
+                    if (data.password !== password) {
+                        showAlert('Invalid email or password.', 'error');
+                        authButton.disabled = false;
+                        authButton.textContent = 'Login';
+                        return;
+                    }
+
+                    currentUser = data;
+                    localStorage.setItem('glitchTechUser', JSON.stringify(data));
                     showDashboard();
                 } else {
-                    showAlert('Invalid email or password.', 'error');
-                }
-            } else {
-                // Signup
-                const name = document.getElementById('name').value;
-                const phone = document.getElementById('phone').value;
-                
-                if (findUser(email)) {
-                    showAlert('Account already exists with this email.', 'error');
-                    return;
-                }
+                    // Signup
+                    const name = document.getElementById('name').value;
+                    const phone = document.getElementById('phone').value;
 
-                // Generate verification code
-                const verificationCode = Math.floor(100000 + Math.random() * 900000);
-                
-                // Show verification prompt
-                const code = prompt(`A verification code has been sent to ${email}\n\nIn a real system, you'd receive an email. For demo purposes, your code is: ${verificationCode}\n\nPlease enter the code:`);
-                
-                if (!code || code !== verificationCode.toString()) {
-                    showAlert('Invalid verification code. Please try again.', 'error');
-                    return;
+                    // Check if email already exists
+                    const { data: existing } = await supabase
+                        .from('customers')
+                        .select('email')
+                        .eq('email', email)
+                        .single();
+
+                    if (existing) {
+                        showAlert('Account already exists with this email.', 'error');
+                        authButton.disabled = false;
+                        authButton.textContent = 'Sign Up';
+                        return;
+                    }
+
+                    // Email verification
+                    const verificationCode = Math.floor(100000 + Math.random() * 900000);
+                    const code = prompt(`A verification code has been sent to ${email}\n\nIn a real system, you'd receive an email. For demo purposes, your code is: ${verificationCode}\n\nPlease enter the code:`);
+                    
+                    if (!code || code !== verificationCode.toString()) {
+                        showAlert('Invalid verification code. Please try again.', 'error');
+                        authButton.disabled = false;
+                        authButton.textContent = 'Sign Up';
+                        return;
+                    }
+
+                    // Create account
+                    const { data: newUser, error } = await supabase
+                        .from('customers')
+                        .insert([{
+                            email: email,
+                            password: password, // In production, hash this!
+                            name: name,
+                            phone: phone,
+                            verified: true
+                        }])
+                        .select()
+                        .single();
+
+                    if (error) {
+                        showAlert('Error creating account: ' + error.message, 'error');
+                        authButton.disabled = false;
+                        authButton.textContent = 'Sign Up';
+                        return;
+                    }
+
+                    showAlert('Account created and verified! You can now login.', 'success');
+                    setTimeout(() => {
+                        isLogin = true;
+                        toggleLink.click();
+                        authButton.disabled = false;
+                    }, 2000);
                 }
-
-                const newUser = {
-                    email: email,
-                    password: password,
-                    name: name,
-                    phone: phone,
-                    repairs: [],
-                    messages: [],
-                    history: [],
-                    verified: true
-                };
-
-                saveUser(newUser);
-                showAlert('Account created and verified! You can now login.', 'success');
-                setTimeout(() => {
-                    isLogin = true;
-                    toggleLink.click();
-                }, 2000);
+            } catch (error) {
+                console.error('Auth error:', error);
+                showAlert('An error occurred. Please try again.', 'error');
+                authButton.disabled = false;
+                authButton.textContent = isLogin ? 'Login' : 'Sign Up';
             }
         });
 
         // Logout
         logoutBtn.addEventListener('click', () => {
             currentUser = null;
+            localStorage.removeItem('glitchTechUser');
             dashboard.style.display = 'none';
             authContainer.style.display = 'block';
             document.getElementById('email').value = '';
@@ -835,35 +955,56 @@
         }
 
         // Show dashboard
-        function showDashboard() {
+        async function showDashboard() {
             authContainer.style.display = 'none';
             dashboard.style.display = 'block';
             customerName.textContent = currentUser.name;
 
-            // Load stats
-            const activeCount = currentUser.repairs.filter(r => r.status !== 'completed').length;
-            const completedCount = currentUser.repairs.filter(r => r.status === 'completed').length;
-            const totalSpent = currentUser.repairs.reduce((sum, r) => {
-                const cost = parseInt((r.actualCost || r.estimatedCost || '0').replace(/\D/g, ''));
-                return sum + (r.status === 'completed' ? cost : 0);
-            }, 0);
+            await loadRepairs();
+            await loadMessages();
+        }
 
-            document.getElementById('activeRepairs').textContent = activeCount;
-            document.getElementById('completedRepairs').textContent = completedCount;
-            document.getElementById('totalSpent').textContent = `$${totalSpent}`;
+        // Load repairs
+        async function loadRepairs() {
+            try {
+                const { data: repairs, error } = await supabase
+                    .from('repairs')
+                    .select('*')
+                    .eq('customer_id', currentUser.id)
+                    .order('created_at', { ascending: false });
 
-            // Load sections
-            loadCurrentRepairs();
-            loadMessages();
-            loadHistory();
+                if (error) throw error;
+
+                // Update stats
+                const activeCount = repairs.filter(r => r.status !== 'completed').length;
+                const completedCount = repairs.filter(r => r.status === 'completed').length;
+                const totalSpent = repairs
+                    .filter(r => r.status === 'completed')
+                    .reduce((sum, r) => {
+                        const cost = parseInt((r.actual_cost || r.estimated_cost || '0').replace(/\D/g, ''));
+                        return sum + cost;
+                    }, 0);
+
+                document.getElementById('activeRepairs').textContent = activeCount;
+                document.getElementById('completedRepairs').textContent = completedCount;
+                document.getElementById('totalSpent').textContent = `$${totalSpent}`;
+
+                // Load current repairs
+                loadCurrentRepairs(repairs.filter(r => r.status !== 'completed'));
+                
+                // Load history
+                loadHistory(repairs.filter(r => r.status === 'completed'));
+            } catch (error) {
+                console.error('Error loading repairs:', error);
+                showAlert('Error loading repairs', 'error');
+            }
         }
 
         // Load current repairs
-        function loadCurrentRepairs() {
+        function loadCurrentRepairs(repairs) {
             const container = document.getElementById('currentRepairs');
-            const active = currentUser.repairs.filter(r => r.status !== 'completed');
 
-            if (active.length === 0) {
+            if (repairs.length === 0) {
                 container.innerHTML = `
                     <div class="empty-state">
                         <div class="empty-state-icon">📭</div>
@@ -873,40 +1014,44 @@
                 return;
             }
 
-            container.innerHTML = active.map(repair => `
+            container.innerHTML = repairs.map(repair => `
                 <div class="repair-item">
-                    <h3>${repair.device}</h3>
+                    <h3>${repair.device_type}${repair.brand ? ' - ' + repair.brand : ''}</h3>
+                    ${repair.image_url ? `<img src="${repair.image_url}" class="repair-image" alt="Device photo" onclick="window.open('${repair.image_url}', '_blank')">` : ''}
                     <div class="repair-info">
                         <div class="repair-info-item">
-                            <strong>Issue:</strong> ${repair.issue}
+                            <strong>Repair #:</strong> ${repair.repair_number}
                         </div>
                         <div class="repair-info-item">
-                            <strong>Service:</strong> ${repair.serviceType}
+                            <strong>Issue:</strong> ${repair.issue.substring(0, 50)}${repair.issue.length > 50 ? '...' : ''}
                         </div>
                         <div class="repair-info-item">
-                            <strong>Requested:</strong> ${repair.dateRequested}
+                            <strong>Service:</strong> ${repair.service_type}
                         </div>
                         <div class="repair-info-item">
-                            <strong>Estimate:</strong> ${repair.estimatedCost}
+                            <strong>Requested:</strong> ${new Date(repair.date_requested).toLocaleDateString()}
+                        </div>
+                        <div class="repair-info-item">
+                            <strong>Estimate:</strong> ${repair.estimated_cost}
                         </div>
                     </div>
                     ${repair.notes ? `<p style="color: #b0b0b0; margin-top: 10px;"><strong>Tech Notes:</strong> ${repair.notes}</p>` : ''}
                     
                     <div class="status-timeline">
-                        <div class="status-step ${repair.status === 'pending' || repair.status === 'received' || repair.status === 'diagnosing' || repair.status === 'repairing' || repair.status === 'ready' ? 'completed' : ''}">
+                        <div class="status-step ${['pending', 'received', 'diagnosing', 'repairing', 'ready'].includes(repair.status) ? 'completed' : ''}">
                             <div class="status-dot">✓</div>
                             <div class="status-label">Pending</div>
                         </div>
-                        <div class="status-step ${repair.status === 'received' || repair.status === 'diagnosing' || repair.status === 'repairing' || repair.status === 'ready' ? 'completed' : repair.status === 'pending' ? 'active' : ''}">
-                            <div class="status-dot">${repair.status === 'received' || repair.status === 'diagnosing' || repair.status === 'repairing' || repair.status === 'ready' ? '✓' : ''}</div>
+                        <div class="status-step ${['received', 'diagnosing', 'repairing', 'ready'].includes(repair.status) ? 'completed' : repair.status === 'pending' ? 'active' : ''}">
+                            <div class="status-dot">${['received', 'diagnosing', 'repairing', 'ready'].includes(repair.status) ? '✓' : ''}</div>
                             <div class="status-label">Received</div>
                         </div>
-                        <div class="status-step ${repair.status === 'diagnosing' || repair.status === 'repairing' || repair.status === 'ready' ? 'completed' : repair.status === 'received' ? 'active' : ''}">
-                            <div class="status-dot">${repair.status === 'diagnosing' || repair.status === 'repairing' || repair.status === 'ready' ? '✓' : ''}</div>
+                        <div class="status-step ${['diagnosing', 'repairing', 'ready'].includes(repair.status) ? 'completed' : repair.status === 'received' ? 'active' : ''}">
+                            <div class="status-dot">${['diagnosing', 'repairing', 'ready'].includes(repair.status) ? '✓' : ''}</div>
                             <div class="status-label">Diagnosing</div>
                         </div>
-                        <div class="status-step ${repair.status === 'repairing' || repair.status === 'ready' ? 'completed' : repair.status === 'diagnosing' ? 'active' : ''}">
-                            <div class="status-dot">${repair.status === 'repairing' || repair.status === 'ready' ? '✓' : ''}</div>
+                        <div class="status-step ${['repairing', 'ready'].includes(repair.status) ? 'completed' : repair.status === 'diagnosing' ? 'active' : ''}">
+                            <div class="status-dot">${['repairing', 'ready'].includes(repair.status) ? '✓' : ''}</div>
                             <div class="status-label">Repairing</div>
                         </div>
                         <div class="status-step ${repair.status === 'ready' ? 'active' : ''}">
@@ -919,57 +1064,67 @@
         }
 
         // Load messages
-        function loadMessages() {
-            const container = document.getElementById('messagesContainer');
-            
-            if (currentUser.messages.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <div class="empty-state-icon">💬</div>
-                        <p>No messages yet.</p>
+        async function loadMessages() {
+            try {
+                const { data: messages, error } = await supabase
+                    .from('messages')
+                    .select('*')
+                    .eq('customer_id', currentUser.id)
+                    .order('created_at', { ascending: true });
+
+                if (error) throw error;
+
+                const container = document.getElementById('messagesContainer');
+                
+                if (messages.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <div class="empty-state-icon">💬</div>
+                            <p>No messages yet.</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = messages.map(msg => `
+                    <div class="message ${msg.from_type === 'tech' ? 'from-tech' : 'from-customer'}">
+                        <div class="message-header">
+                            <span class="message-sender">${msg.from_type === 'tech' ? 'Glitch Tech' : 'You'}</span>
+                            <span class="message-time">${new Date(msg.created_at).toLocaleString()}</span>
+                        </div>
+                        <div class="message-content">${msg.content}</div>
                     </div>
-                `;
-                return;
+                `).join('');
+
+                container.scrollTop = container.scrollHeight;
+            } catch (error) {
+                console.error('Error loading messages:', error);
             }
-
-            container.innerHTML = currentUser.messages.map(msg => `
-                <div class="message ${msg.from === 'tech' ? 'from-tech' : 'from-customer'}">
-                    <div class="message-header">
-                        <span class="message-sender">${msg.from === 'tech' ? 'Glitch Tech' : 'You'}</span>
-                        <span class="message-time">${msg.time}</span>
-                    </div>
-                    <div class="message-content">${msg.content}</div>
-                </div>
-            `).join('');
-
-            container.scrollTop = container.scrollHeight;
         }
 
         // Send message
-        document.getElementById('sendMessage').addEventListener('click', () => {
+        document.getElementById('sendMessage').addEventListener('click', async () => {
             const input = document.getElementById('messageInput');
             const message = input.value.trim();
 
-            if (message) {
-                const now = new Date();
-                const time = now.toLocaleString('en-US', { 
-                    month: '2-digit', 
-                    day: '2-digit', 
-                    year: 'numeric',
-                    hour: 'numeric',
-                    minute: '2-digit',
-                    hour12: true 
-                }).replace(',', '');
+            if (message && currentUser) {
+                try {
+                    const { error } = await supabase
+                        .from('messages')
+                        .insert([{
+                            customer_id: currentUser.id,
+                            from_type: 'customer',
+                            content: message
+                        }]);
 
-                currentUser.messages.push({
-                    from: 'customer',
-                    content: message,
-                    time: time
-                });
+                    if (error) throw error;
 
-                updateUser(currentUser);
-                input.value = '';
-                loadMessages();
+                    input.value = '';
+                    await loadMessages();
+                } catch (error) {
+                    console.error('Error sending message:', error);
+                    showAlert('Error sending message', 'error');
+                }
             }
         });
 
@@ -981,11 +1136,10 @@
         });
 
         // Load history
-        function loadHistory() {
+        function loadHistory(completedRepairs) {
             const container = document.getElementById('repairHistory');
-            const completed = currentUser.repairs.filter(r => r.status === 'completed');
 
-            if (completed.length === 0) {
+            if (completedRepairs.length === 0) {
                 container.innerHTML = `
                     <div class="empty-state">
                         <div class="empty-state-icon">📋</div>
@@ -995,97 +1149,171 @@
                 return;
             }
 
-            container.innerHTML = completed.map(repair => `
+            container.innerHTML = completedRepairs.map(repair => `
                 <div class="repair-item">
-                    <h3>${repair.device}</h3>
+                    <h3>${repair.device_type}${repair.brand ? ' - ' + repair.brand : ''}</h3>
+                    ${repair.image_url ? `<img src="${repair.image_url}" class="repair-image" alt="Device photo" onclick="window.open('${repair.image_url}', '_blank')">` : ''}
                     <div class="repair-info">
+                        <div class="repair-info-item">
+                            <strong>Repair #:</strong> ${repair.repair_number}
+                        </div>
                         <div class="repair-info-item">
                             <strong>Issue:</strong> ${repair.issue}
                         </div>
                         <div class="repair-info-item">
-                            <strong>Service:</strong> ${repair.serviceType}
+                            <strong>Service:</strong> ${repair.service_type}
                         </div>
                         <div class="repair-info-item">
-                            <strong>Date:</strong> ${repair.dateRequested}
+                            <strong>Date:</strong> ${new Date(repair.date_requested).toLocaleDateString()}
                         </div>
                         <div class="repair-info-item">
-                            <strong>Cost:</strong> ${repair.actualCost}
+                            <strong>Cost:</strong> ${repair.actual_cost || repair.estimated_cost}
                         </div>
                     </div>
                 </div>
             `).join('');
         }
 
-        // Book Repair
+        // Book repair modal
         document.getElementById('bookRepairBtn').addEventListener('click', () => {
             document.getElementById('bookRepairModal').style.display = 'block';
         });
 
         function closeBookingModal() {
             document.getElementById('bookRepairModal').style.display = 'none';
+            document.getElementById('bookingForm').reset();
+            document.getElementById('filePreview').innerHTML = '';
+            selectedFile = null;
+        }
+
+        // File upload handling
+        const fileUploadArea = document.getElementById('fileUploadArea');
+        const deviceImageInput = document.getElementById('deviceImage');
+        const filePreview = document.getElementById('filePreview');
+
+        fileUploadArea.addEventListener('click', () => {
+            deviceImageInput.click();
+        });
+
+        deviceImageInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                selectedFile = file;
+                previewFile(file);
+            }
+        });
+
+        // Drag and drop
+        fileUploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            fileUploadArea.classList.add('drag-over');
+        });
+
+        fileUploadArea.addEventListener('dragleave', () => {
+            fileUploadArea.classList.remove('drag-over');
+        });
+
+        fileUploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            fileUploadArea.classList.remove('drag-over');
+            
+            const file = e.dataTransfer.files[0];
+            if (file && file.type.startsWith('image/')) {
+                selectedFile = file;
+                previewFile(file);
+            }
+        });
+
+        function previewFile(file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                filePreview.innerHTML = `<img src="${e.target.result}" alt="Preview">`;
+            };
+            reader.readAsDataURL(file);
         }
 
         // Handle booking form
-        document.getElementById('bookingForm').addEventListener('submit', (e) => {
+        document.getElementById('bookingForm').addEventListener('submit', async (e) => {
             e.preventDefault();
 
-            const deviceType = document.getElementById('deviceType').value;
-            const brand = document.getElementById('brand').value;
-            const issue = document.getElementById('issue').value;
-            const serviceType = document.getElementById('serviceType').value;
-            const urgency = document.getElementById('urgency').value;
+            const submitBtn = document.getElementById('submitBookingBtn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Submitting...';
 
-            const newRepair = {
-                id: 'R' + Date.now(),
-                device: brand || deviceType,
-                issue: issue,
-                serviceType: serviceType,
-                urgency: urgency,
-                status: 'pending',
-                dateRequested: new Date().toLocaleDateString(),
-                estimatedCost: getEstimatedCost(serviceType, urgency),
-                notes: ''
-            };
+            try {
+                const deviceType = document.getElementById('deviceType').value;
+                const brand = document.getElementById('brand').value;
+                const issue = document.getElementById('issue').value;
+                const serviceType = document.getElementById('serviceType').value;
+                const urgency = document.getElementById('urgency').value;
 
-            currentUser.repairs.push(newRepair);
-            
-            // Add welcome message
-            const now = new Date();
-            const time = now.toLocaleString('en-US', { 
-                month: '2-digit', 
-                day: '2-digit', 
-                year: 'numeric',
-                hour: 'numeric',
-                minute: '2-digit',
-                hour12: true 
-            }).replace(',', '');
+                let imageUrl = null;
 
-            currentUser.messages.push({
-                from: 'tech',
-                content: `Thanks for booking! I received your repair request for ${deviceType} (${serviceType}). I'll review it and get back to you shortly!`,
-                time: time
-            });
+                // Upload image if selected
+                if (selectedFile) {
+                    submitBtn.textContent = 'Uploading image...';
+                    const fileExt = selectedFile.name.split('.').pop();
+                    const fileName = `${currentUser.id}_${Date.now()}.${fileExt}`;
+                    
+                    const { data: uploadData, error: uploadError } = await supabase.storage
+                        .from('repair-images')
+                        .upload(fileName, selectedFile);
 
-            updateUser(currentUser);
-            closeBookingModal();
-            showDashboard();
-            showAlert('Repair booked successfully! We\'ll be in touch soon.', 'success');
+                    if (uploadError) throw uploadError;
 
-            // Reset form
-            document.getElementById('bookingForm').reset();
+                    const { data: { publicUrl } } = supabase.storage
+                        .from('repair-images')
+                        .getPublicUrl(fileName);
+
+                    imageUrl = publicUrl;
+                }
+
+                // Create repair
+                submitBtn.textContent = 'Creating repair...';
+                const { data: repair, error } = await supabase
+                    .from('repairs')
+                    .insert([{
+                        customer_id: currentUser.id,
+                        device_type: deviceType,
+                        brand: brand,
+                        issue: issue,
+                        service_type: serviceType,
+                        urgency: urgency,
+                        status: 'pending',
+                        estimated_cost: getEstimatedCost(serviceType, urgency),
+                        image_url: imageUrl
+                    }])
+                    .select()
+                    .single();
+
+                if (error) throw error;
+
+                // Send welcome message
+                await supabase
+                    .from('messages')
+                    .insert([{
+                        customer_id: currentUser.id,
+                        repair_id: repair.id,
+                        from_type: 'tech',
+                        content: `Thanks for booking! I received your repair request for ${deviceType} (${serviceType}). I'll review it and get back to you shortly!`
+                    }]);
+
+                closeBookingModal();
+                showAlert('Repair booked successfully! We\'ll be in touch soon.', 'success');
+                await loadRepairs();
+                await loadMessages();
+
+            } catch (error) {
+                console.error('Booking error:', error);
+                showAlert('Error booking repair: ' + error.message, 'error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Submit Repair Request';
+            }
         });
 
         function getEstimatedCost(serviceType, urgency) {
-            let cost = '';
-            switch(serviceType) {
-                case 'virus': cost = '$50-80'; break;
-                case 'hardware': cost = '$60-150'; break;
-                case 'data': cost = '$75-200'; break;
-                case 'tuneup': cost = '$40-60'; break;
-                case 'os': cost = '$60-100'; break;
-                case 'diagnostic': cost = '$30'; break;
-                default: cost = 'TBD';
-            }
+            let cost = serviceType.match(/\$[\d-]+/)?.[0] || 'TBD';
             if (urgency === 'urgent') {
                 cost += ' (+$30 rush)';
             }
