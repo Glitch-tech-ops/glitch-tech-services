@@ -912,7 +912,7 @@
         async function editRepair(repairId) {
             try {
                 // Get repair with customer data
-                const { data: repair, error: repairError } = await supabase
+                const { data: repair, error: repairError } = await supabaseClient
                     .from('repairs')
                     .select('*')
                     .eq('id', repairId)
@@ -920,7 +920,7 @@
 
                 if (repairError) throw repairError;
 
-                const { data: customer, error: customerError } = await supabase
+                const { data: customer, error: customerError } = await supabaseClient
                     .from('customers')
                     .select('*')
                     .eq('id', repair.customer_id)
@@ -929,7 +929,7 @@
                 if (customerError) throw customerError;
 
                 // Get messages
-                const { data: messages } = await supabase
+                const { data: messages } = await supabaseClient
                     .from('messages')
                     .select('*')
                     .eq('repair_id', repairId)
@@ -1010,7 +1010,7 @@
                 const newMessage = document.getElementById('newMessage').value.trim();
 
                 // Update repair
-                const { error: updateError } = await supabase
+                const { error: updateError } = await supabaseClient
                     .from('repairs')
                     .update({
                         status: status,
@@ -1024,7 +1024,7 @@
 
                 // Add message if provided
                 if (newMessage) {
-                    const { error: messageError } = await supabase
+                    const { error: messageError } = await supabaseClient
                         .from('messages')
                         .insert([{
                             customer_id: currentRepair.customer_id,

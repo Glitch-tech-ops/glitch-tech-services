@@ -848,7 +848,7 @@
             try {
                 if (isLogin) {
                     // Login
-                    const { data, error } = await supabase
+                    const { data, error } = await supabaseClient
                         .from('customers')
                         .select('*')
                         .eq('email', email)
@@ -903,7 +903,7 @@
                     }
 
                     // Create account
-                    const { data: newUser, error } = await supabase
+                    const { data: newUser, error } = await supabaseClient
                         .from('customers')
                         .insert([{
                             email: email,
@@ -968,7 +968,7 @@
         // Load repairs
         async function loadRepairs() {
             try {
-                const { data: repairs, error } = await supabase
+                const { data: repairs, error } = await supabaseClient
                     .from('repairs')
                     .select('*')
                     .eq('customer_id', currentUser.id)
@@ -1067,7 +1067,7 @@
         // Load messages
         async function loadMessages() {
             try {
-                const { data: messages, error } = await supabase
+                const { data: messages, error } = await supabaseClient
                     .from('messages')
                     .select('*')
                     .eq('customer_id', currentUser.id)
@@ -1110,7 +1110,7 @@
 
             if (message && currentUser) {
                 try {
-                    const { error } = await supabase
+                    const { error } = await supabaseClient
                         .from('messages')
                         .insert([{
                             customer_id: currentUser.id,
@@ -1271,7 +1271,7 @@
 
                 // Create repair
                 submitBtn.textContent = 'Creating repair...';
-                const { data: repair, error } = await supabase
+                const { data: repair, error } = await supabaseClient
                     .from('repairs')
                     .insert([{
                         customer_id: currentUser.id,
@@ -1290,7 +1290,7 @@
                 if (error) throw error;
 
                 // Send welcome message
-                await supabase
+                await supabaseClient
                     .from('messages')
                     .insert([{
                         customer_id: currentUser.id,
