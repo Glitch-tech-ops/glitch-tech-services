@@ -891,18 +891,7 @@
                         return;
                     }
 
-                    // Email verification
-                    const verificationCode = Math.floor(100000 + Math.random() * 900000);
-                    const code = prompt(`A verification code has been sent to ${email}\n\nIn a real system, you'd receive an email. For demo purposes, your code is: ${verificationCode}\n\nPlease enter the code:`);
-                    
-                    if (!code || code !== verificationCode.toString()) {
-                        showAlert('Invalid verification code. Please try again.', 'error');
-                        authButton.disabled = false;
-                        authButton.textContent = 'Sign Up';
-                        return;
-                    }
-
-                    // Create account
+                    // Create account (auto-verified)
                     const { data: newUser, error } = await supabaseClient
                         .from('customers')
                         .insert([{
