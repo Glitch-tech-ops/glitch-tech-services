@@ -159,6 +159,7 @@
       es: { subtitle:"Asistente de Reparación IA", name:"NOMBRE COMPLETO", device:"TIPO DE DISPOSITIVO", brand:"MARCA Y MODELO", issue:"DESCRIBE EL PROBLEMA", submit:"⚡ ANALIZAR Y COTIZAR", analyzing:"Escaneando perfil del dispositivo...", price:"RANGO DE PRECIO", time:"TIEMPO EST. DE REPARACIÓN", diagnosis:"▸ DIAGNÓSTICO", followup:"▸ MENSAJE DE SEGUIMIENTO", copy:"⎘ COPIAR MENSAJE", copied:"✓ ¡COPIADO!", reset:"↺ NUEVA SOLICITUD", required:"⚠ Por favor completa todos los campos requeridos.", error:"⚠ Algo salió mal. Por favor intenta de nuevo.", footer:"Reparación Móvil · Hallandale Beach a Boca Raton · 561-849-6319" }
     };
     let lang = 'en';
+    let lastName='', lastDevice='', lastBrand='', lastIssue='';
     function setLang(l) {
       lang = l;
       document.getElementById('btn-en').classList.toggle('active', l==='en');
@@ -183,6 +184,31 @@
       document.getElementById('inp-device').placeholder = ph.device;
       document.getElementById('inp-brand').placeholder = ph.brand;
       document.getElementById('inp-issue').placeholder = ph.issue;
+      if (document.getElementById('step-result').style.display !== 'none' && lastName) {
+        retranslateResult();
+      }
+    }
+    async function retranslateResult() {
+      showStep('loading'); startDots();
+      const userMsg=lang==='en' ? `Customer: ${lastName}\nDevice: ${lastDevice}${lastBrand?` (${lastBrand})`:''}\nIssue: ${lastIssue}\n\nRespond in English.` : `Cliente: ${lastName}\nDispositivo: ${lastDevice}${lastBrand?` (${lastBrand})`:''}\nProblema: ${lastIssue}\n\nResponde en Español.`;
+      try {
+        const payload = { model:'claude-haiku-4-5-20251001', max_tokens:1000, system:`You are the AI diagnostic assistant for Glitch Tech Services, a bilingual (English/Spanish) mobile computer repair business serving Hallandale Beach to Boca Raton, FL. You specialize in laptops, desktops, tablets, and phones.\n\nGiven a customer's device info and issue, respond ONLY with a valid JSON object (no markdown, no code fences, no extra text):\n{"diagnosis":"detailed diagnosis of the likely issue","estimatedTime":"realistic repair time estimate","priceRange":"USD price range for the repair (e.g. $80–$120)","followUpMessage":"a professional, friendly follow-up/confirmation message the technician will send to the customer — include customer name, the issue, next steps, and contact info: 561-849-6319 / glitch-tech-services.pages.dev"}`, messages:[{role:'user',content:userMsg}] };
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 30000);
+        const res = await fetch('/api/chat', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload), signal:controller.signal });
+        clearTimeout(timeout);
+        const data = await res.json();
+        const raw = data.content?.[0]?.text||'';
+        const clean = raw.replace(/```json|```/g,'').replace(/[\x00-\x1F\x7F]/g,'').trim();
+        const match = clean.match(/\{[\s\S]*\}/);
+        if (!match) throw new Error('No valid response received');
+        const parsed = JSON.parse(match[0]);
+        document.getElementById('val-price').textContent=parsed.priceRange||'—';
+        document.getElementById('val-time').textContent=parsed.estimatedTime||'—';
+        document.getElementById('val-diagnosis').textContent=parsed.diagnosis||'';
+        document.getElementById('val-followup').textContent=parsed.followUpMessage||'';
+        stopDots(); showStep('result');
+      } catch(err) { stopDots(); showStep('result'); }
     }
     function showStep(step) {
       ['step-form','step-loading','step-result'].forEach(id => { const el=document.getElementById(id); el.style.display='none'; el.style.animation=''; });
@@ -222,6 +248,7 @@
         const match=clean.match(/\{[\s\S]*\}/);
         if (!match) throw new Error('No valid response received');
         const parsed=JSON.parse(match[0]);
+        lastName=name; lastDevice=device; lastBrand=brand; lastIssue=issue;
         document.getElementById('val-price').textContent=parsed.priceRange||'—';
         document.getElementById('val-time').textContent=parsed.estimatedTime||'—';
         document.getElementById('val-diagnosis').textContent=parsed.diagnosis||'';
