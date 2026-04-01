@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Glitch Tech Services | Computer Repair & IT Solutions</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=IBM+Plex+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --neon-green: #00ff41;
+            --dark-bg: #0a0e27;
+            --darker-bg: #050810;
+            --card-bg: rgba(15, 20, 40, 0.8);
+            --border-glow: rgba(0, 255, 65, 0.3);
+        }
+
+        body {
+            font-family: 'IBM Plex Sans', sans-serif;
+            background: var(--dark-bg);
+            color: #e0e0e0;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animated Background */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.15;
+            background: 
+                linear-gradient(90deg, transparent 49%, var(--neon-green) 49%, var(--neon-green) 51%, transparent 51%),
+                linear-gradient(0deg, transparent 49%, var(--neon-green) 49%, var(--neon-green) 51%, transparent 51%);
+            background-size: 50px 50px;
+            animation: gridPulse 4s ease-in-out infinite;
+        }
+
+        @keyframes gridPulse {
+            0%, 100% { opacity: 0.1; }
+            50% { opacity: 0.2; }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Header */
+        header {
+            padding: 30px 0;
+            border-bottom: 2px solid var(--border-glow);
+            background: rgba(10, 14, 39, 0.9);
+            backdrop-filter: blur(10px);
+        }
+
+        .logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--neon-green);
+            text-shadow: 0 0 20px var(--neon-green);
+            animation: glitch 3s infinite;
+        }
+
+        @keyframes glitch {
+            0%, 90%, 100% { transform: translateX(0); }
+            92% { transform: translateX(-2px); }
+            94% { transform: translateX(2px); }
+        }
+
+        .tagline {
+            color: #888;
+            font-size: 0.9rem;
+            margin-top: 5px;
+            letter-spacing: 2px;
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 80px 0;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3rem;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #00ff41, #00cc33);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: #b0b0b0;
+            max-width: 700px;
+            margin: 0 auto 40px;
+            line-height: 1.6;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 15px 40px;
+            background: var(--neon-green);
+            color: var(--darker-bg);
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: all 0.3s;
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.5);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 30px rgba(0, 255, 65, 0.8);
+        }
+
+        /* Services Section */
+        .services {
+            padding: 80px 0;
+        }
+
+        .section-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 60px;
+            color: var(--neon-green);
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .service-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-glow);
+            border-radius: 10px;
+            padding: 30px;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(0, 255, 65, 0.1) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .service-card:hover::before {
+            opacity: 1;
+        }
+
+        .service-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--neon-green);
+            box-shadow: 0 10px 30px rgba(0, 255, 65, 0.3);
+        }
+
+        .service-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            filter: drop-shadow(0 0 10px var(--neon-green));
+        }
+
+        .service-card h3 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--neon-green);
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+        }
+
+        .service-card p {
+            color: #b0b0b0;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .price {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--neon-green);
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-top: 15px;
+        }
+
+        .price-note {
+            font-size: 0.85rem;
+            color: #888;
+            margin-top: 5px;
+        }
+
+        /* Stats Section */
+        .stats {
+            padding: 60px 0;
+            background: rgba(0, 255, 65, 0.05);
+            border-top: 1px solid var(--border-glow);
+            border-bottom: 1px solid var(--border-glow);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            text-align: center;
+        }
+
+        .stat-item h3 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3rem;
+            color: var(--neon-green);
+            margin-bottom: 10px;
+        }
+
+        .stat-item p {
+            color: #b0b0b0;
+            font-size: 0.95rem;
+        }
+
+        /* Contact Section */
+        .contact {
+            padding: 80px 0;
+        }
+
+        .contact-form {
+            max-width: 600px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 10px;
+            border: 1px solid var(--border-glow);
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--neon-green);
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-glow);
+            border-radius: 5px;
+            color: #e0e0e0;
+            font-family: 'IBM Plex Sans', sans-serif;
+            font-size: 1rem;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--neon-green);
+            box-shadow: 0 0 10px rgba(0, 255, 65, 0.3);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            background: var(--neon-green);
+            color: var(--darker-bg);
+            border: none;
+            border-radius: 5px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0, 255, 65, 0.5);
+        }
+
+        /* Footer */
+        footer {
+            padding: 40px 0;
+            text-align: center;
+            border-top: 1px solid var(--border-glow);
+            background: rgba(10, 14, 39, 0.9);
+        }
+
+        footer p {
+            color: #888;
+            font-size: 0.9rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .logo {
+                font-size: 1.5rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .services-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-animation"></div>
+
+    <header>
+        <div class="container">
+            <div class="logo">GLITCH TECH</div>
+            <div class="tagline">PROFESSIONAL COMPUTER SERVICES</div>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <h1>Expert Laptop & Desktop Repair</h1>
+            <p>Fast, affordable, and reliable computer services. We fix what others can't. Same-day service available. No job too small, no glitch too big.</p>
+            <a href="#contact" class="cta-button">GET A FREE QUOTE</a>
+        </div>
+    </section>
+
+    <section class="services">
+        <div class="container">
+            <h2 class="section-title">Our Services</h2>
+            <div class="services-grid">
+                <!-- Hardware Repair -->
+                <div class="service-card">
+                    <div class="service-icon">🔧</div>
+                    <h3>Hardware Repair & Upgrade</h3>
+                    <p>RAM upgrades, hard drive replacement, SSD installation, motherboard repair, power supply replacement, and component diagnostics.</p>
+                    <div class="price">$60 - $150</div>
+                    <div class="price-note">Starting price, depends on parts</div>
+                </div>
+
+                <!-- Virus Removal -->
+                <div class="service-card">
+                    <div class="service-icon">🛡️</div>
+                    <h3>Virus & Malware Removal</h3>
+                    <p>Complete system cleanup, malware removal, ransomware recovery, security software installation, and system optimization.</p>
+                    <div class="price">$50 - $80</div>
+                    <div class="price-note">Guaranteed clean system</div>
+                </div>
+
+                <!-- Data Recovery -->
+                <div class="service-card">
+                    <div class="service-icon">💾</div>
+                    <h3>Data Recovery</h3>
+                    <p>Lost files? Failed hard drive? We recover data from corrupted drives, accidental deletions, and system failures.</p>
+                    <div class="price">$75 - $200</div>
+                    <div class="price-note">No data, no charge</div>
+                </div>
+
+                <!-- Performance Optimization -->
+                <div class="service-card">
+                    <div class="service-icon">⚡</div>
+                    <h3>Performance Tune-Up</h3>
+                    <p>Computer running slow? We'll clean up your system, remove bloatware, optimize startup, and make it run like new.</p>
+                    <div class="price">$40 - $60</div>
+                    <div class="price-note">See immediate improvement</div>
+                </div>
+
+                <!-- OS Installation -->
+                <div class="service-card">
+                    <div class="service-icon">💻</div>
+                    <h3>OS Installation & Setup</h3>
+                    <p>Windows installation, Linux setup, dual-boot configuration, driver installation, and software setup.</p>
+                    <div class="price">$60 - $100</div>
+                    <div class="price-note">Includes activation & updates</div>
+                </div>
+
+                <!-- Diagnostics -->
+                <div class="service-card">
+                    <div class="service-icon">🔍</div>
+                    <h3>Computer Diagnostics</h3>
+                    <p>Not sure what's wrong? We'll run complete diagnostics to identify hardware or software issues.</p>
+                    <div class="price">$30</div>
+                    <div class="price-note">Free with repair service</div>
+                </div>
+
+                <!-- Custom Builds -->
+                <div class="service-card">
+                    <div class="service-icon">🎮</div>
+                    <h3>Custom PC Build</h3>
+                    <p>Gaming rig or workstation? We'll build a custom computer tailored to your needs and budget.</p>
+                    <div class="price">$100 - $200</div>
+                    <div class="price-note">Build fee (parts separate)</div>
+                </div>
+
+                <!-- Emergency Service -->
+                <div class="service-card">
+                    <div class="service-icon">🚨</div>
+                    <h3>Emergency Same-Day Service</h3>
+                    <p>Need it fixed today? We offer rush service for urgent repairs. Available 7 days a week.</p>
+                    <div class="price">+$30</div>
+                    <div class="price-note">Added to service cost</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="stats">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <h3>24HR</h3>
+                    <p>Average Turnaround</p>
+                </div>
+                <div class="stat-item">
+                    <h3>$50+</h3>
+                    <p>Savings vs Repair Shops</p>
+                </div>
+                <div class="stat-item">
+                    <h3>100%</h3>
+                    <p>Satisfaction Rate</p>
+                </div>
+                <div class="stat-item">
+                    <h3>7 DAYS</h3>
+                    <p>Service Available</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="contact" id="contact">
+        <div class="container">
+            <h2 class="section-title">Get Your Free Quote</h2>
+            <form class="contact-form" id="contactForm">
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Phone</label>
+                    <input type="tel" id="phone" name="phone" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="service">Service Needed</label>
+                    <select id="service" name="service" required>
+                        <option value="">Select a service...</option>
+                        <option value="hardware">Hardware Repair & Upgrade</option>
+                        <option value="virus">Virus & Malware Removal</option>
+                        <option value="data">Data Recovery</option>
+                        <option value="performance">Performance Tune-Up</option>
+                        <option value="os">OS Installation & Setup</option>
+                        <option value="diagnostics">Computer Diagnostics</option>
+                        <option value="build">Custom PC Build</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="message">Describe the Issue</label>
+                    <textarea id="message" name="message" required></textarea>
+                </div>
+
+                <button type="submit" class="submit-btn">REQUEST QUOTE</button>
+            </form>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Glitch Tech Services. Fast, Affordable, Reliable Computer Repair.</p>
+            <p style="margin-top: 10px; font-size: 0.8rem;">📍 Local Service | 📞 Same-Day Available | 💯 Satisfaction Guaranteed</p>
+        </div>
+    </footer>
+
+    <script>
+        // Form submission handler
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Thank you for your request! We\'ll contact you within 2 hours to discuss your repair.');
+            this.reset();
+        });
+
+        // Smooth scroll for CTA button
+        document.querySelector('.cta-button').addEventListener('click', function(e) {
+            e.preventDefault();
+            document.getElementById('contact').scrollIntoView({ behavior: 'smooth' });
+        });
+    </script>
+</body>
+</html>
