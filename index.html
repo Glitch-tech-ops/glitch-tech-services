@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Glitch Tech Services — AI Repair Assistant</title>
+  <meta name="description" content="Glitch Tech Services — Bilingual mobile computer repair from Hallandale Beach to Boca Raton. Get an instant AI-powered diagnosis and quote." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@700;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --green: #00ff9f; --cyan: #00e5ff; --bg: #050a05; --surface: #0a1a0e;
+      --text: #c8ffd4; --muted: #00ff9f88; --red: #ff4d4d;
+    }
+    body {
+      min-height: 100vh; background: var(--bg);
+      background-image: radial-gradient(ellipse at 50% 0%, #001a0a 0%, #050a05 60%);
+      font-family: 'Share Tech Mono', monospace; color: var(--text);
+      display: flex; flex-direction: column; align-items: center;
+      padding: 32px 16px 64px; position: relative; overflow-x: hidden;
+    }
+    body::before {
+      content: ''; position: fixed; inset: 0;
+      background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,255,159,0.015) 2px, rgba(0,255,159,0.015) 4px);
+      pointer-events: none; z-index: 0;
+    }
+    body::after {
+      content: ''; position: fixed; top: 0; left: 0; right: 0; height: 60px;
+      background: linear-gradient(transparent, rgba(0,255,159,0.04), transparent);
+      animation: scanline 6s linear infinite; pointer-events: none; z-index: 1;
+    }
+    .corner { position: fixed; width: 40px; height: 40px; pointer-events: none; z-index: 0; }
+    .corner-tl { top:16px; left:16px; border-top:2px solid #00ff9f44; border-left:2px solid #00ff9f44; }
+    .corner-tr { top:16px; right:16px; border-top:2px solid #00ff9f44; border-right:2px solid #00ff9f44; }
+    .corner-bl { bottom:16px; left:16px; border-bottom:2px solid #00ff9f44; border-left:2px solid #00ff9f44; }
+    .corner-br { bottom:16px; right:16px; border-bottom:2px solid #00ff9f44; border-right:2px solid #00ff9f44; }
+    .container { width:100%; max-width:560px; position:relative; z-index:2; }
+    .lang-toggle { display:flex; justify-content:flex-end; gap:8px; margin-bottom:24px; }
+    .lang-btn { background:transparent; border:1px solid #00ff9f44; color:#00ff9f88; padding:4px 12px; font-family:'Share Tech Mono',monospace; font-size:11px; letter-spacing:2px; cursor:pointer; transition:all 0.2s; }
+    .lang-btn.active { background:#00ff9f22; border-color:var(--green); color:var(--green); }
+    .logo { font-family:'Orbitron',sans-serif; font-size:clamp(32px,8vw,52px); font-weight:900; color:var(--green); letter-spacing:4px; text-shadow:0 0 30px #00ff9f88,0 0 60px #00ff9f44; animation:glitch 8s infinite,flicker 12s infinite; text-align:center; line-height:1; margin-bottom:6px; }
+    .logo span { color:var(--cyan); }
+    .subtitle { font-size:11px; letter-spacing:6px; color:var(--muted); text-transform:uppercase; text-align:center; margin-bottom:8px; }
+    .divider { width:100%; height:1px; background:linear-gradient(90deg,transparent,#00ff9f88,transparent); margin-bottom:32px; }
+    .field { margin-bottom:20px; }
+    label { display:block; font-size:11px; letter-spacing:3px; color:var(--muted); margin-bottom:6px; }
+    label .req { color:var(--red); }
+    input, textarea { width:100%; background:var(--surface); border:1px solid #00ff9f44; border-left:3px solid var(--green); color:var(--text); padding:12px 16px; font-family:'Share Tech Mono',monospace; font-size:14px; outline:none; transition:border-color 0.2s,box-shadow 0.2s; resize:vertical; }
+    input::placeholder, textarea::placeholder { color:#00ff9f44; }
+    input:focus, textarea:focus { border-color:var(--green); box-shadow:0 0 16px #00ff9f22; }
+    .error-msg { color:var(--red); font-size:12px; letter-spacing:2px; text-align:center; margin-bottom:16px; }
+    .submit-btn { width:100%; background:linear-gradient(135deg,#003d1a,#005c28); border:1px solid var(--green); color:var(--green); padding:16px; font-family:'Orbitron',sans-serif; font-size:14px; font-weight:700; letter-spacing:3px; cursor:pointer; text-transform:uppercase; animation:pulseGreen 3s ease-in-out infinite; transition:background 0.2s; }
+    .submit-btn:hover { background:linear-gradient(135deg,#005c28,#007a35); }
+    .loading { text-align:center; padding:80px 0; animation:fadeInUp 0.3s ease; display:none; flex-direction:column; align-items:center; }
+    .spinner { width:60px; height:60px; margin:0 auto 32px; border:2px solid #00ff9f22; border-top:2px solid var(--green); border-radius:50%; animation:spin 0.8s linear infinite; }
+    .loading-label { font-family:'Orbitron',sans-serif; font-size:13px; letter-spacing:4px; color:var(--green); }
+    .loading-dots { color:#00ff9f66; margin-top:12px; font-size:18px; animation:blink 1s infinite; }
+    .progress-bars { margin-top:40px; text-align:left; width:100%; }
+    .progress-item { margin-bottom:16px; }
+    .progress-label { font-size:10px; letter-spacing:3px; color:#00ff9f66; margin-bottom:4px; }
+    .progress-track { height:4px; background:var(--surface); border:1px solid #00ff9f22; }
+    .progress-fill { height:100%; background:linear-gradient(90deg,var(--green),var(--cyan)); animation:pulseGreen 2s ease-in-out infinite; }
+    .result { animation:fadeInUp 0.5s ease; display:none; }
+    .result-cards { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:20px; }
+    .result-card { background:var(--surface); border:1px solid #00ff9f44; border-top:2px solid var(--green); padding:16px; text-align:center; }
+    .result-card.cyan { border-top-color:var(--cyan); border-color:#00e5ff44; }
+    .card-icon { font-size:22px; margin-bottom:6px; }
+    .card-label { font-size:10px; letter-spacing:3px; color:var(--muted); margin-bottom:6px; }
+    .card-label.cyan-label { color:#00e5ff88; }
+    .card-value { font-size:15px; color:var(--green); font-family:'Orbitron',sans-serif; font-weight:700; }
+    .card-value.cyan-value { color:var(--cyan); }
+    .result-block { background:var(--surface); border:1px solid #00ff9f33; border-left:3px solid var(--green); padding:20px; margin-bottom:16px; }
+    .result-block.cyan-block { border-color:#00e5ff33; border-left-color:var(--cyan); }
+    .block-label { font-size:10px; letter-spacing:3px; color:var(--muted); margin-bottom:10px; }
+    .block-label.cyan-label { color:#00e5ff88; }
+    .block-text { font-size:14px; line-height:1.7; color:var(--text); white-space:pre-wrap; }
+    .block-text.small { font-size:13px; line-height:1.8; }
+    .action-btns { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    .action-btn { background:transparent; border:1px solid var(--cyan); color:var(--cyan); padding:14px; font-family:'Share Tech Mono',monospace; font-size:12px; letter-spacing:2px; cursor:pointer; transition:all 0.2s; }
+    .action-btn.green-btn { border-color:#00ff9f66; color:#00ff9f99; }
+    .action-btn.green-btn:hover { border-color:var(--green); color:var(--green); }
+    .action-btn.copied { background:#00ff9f22; color:var(--green); border-color:var(--green); }
+    .footer { margin-top:48px; text-align:center; font-size:10px; letter-spacing:2px; color:#00ff9f44; line-height:1.8; }
+    @keyframes scanline { 0%{transform:translateY(-100%)} 100%{transform:translateY(100vh)} }
+    @keyframes glitch { 0%,90%,100%{clip-path:none;transform:none} 92%{clip-path:polygon(0 20%,100% 20%,100% 40%,0 40%);transform:translateX(-4px)} 94%{clip-path:polygon(0 60%,100% 60%,100% 80%,0 80%);transform:translateX(4px)} 96%{clip-path:polygon(0 10%,100% 10%,100% 30%,0 30%);transform:translateX(-2px)} }
+    @keyframes pulseGreen { 0%,100%{box-shadow:0 0 8px #00ff9f44,inset 0 0 8px #00ff9f11} 50%{box-shadow:0 0 20px #00ff9f88,inset 0 0 12px #00ff9f22} }
+    @keyframes fadeInUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+    @keyframes spin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+    @keyframes flicker { 0%,95%,100%{opacity:1} 96%{opacity:0.6} 97%{opacity:1} 98%{opacity:0.4} }
+  </style>
+</head>
+<body>
+  <div class="corner corner-tl"></div>
+  <div class="corner corner-tr"></div>
+  <div class="corner corner-bl"></div>
+  <div class="corner corner-br"></div>
+  <div class="container">
+    <div class="lang-toggle">
+      <button class="lang-btn active" onclick="setLang('en')" id="btn-en">EN</button>
+      <button class="lang-btn" onclick="setLang('es')" id="btn-es">ES</button>
+    </div>
+    <div class="logo">GLITCH<span>TECH</span></div>
+    <div class="subtitle" id="txt-subtitle">AI Repair Assistant</div>
+    <div class="divider"></div>
+    <div id="step-form">
+      <div class="field">
+        <label id="lbl-name">FULL NAME <span class="req">*</span></label>
+        <input type="text" id="inp-name" placeholder="John Smith" />
+      </div>
+      <div class="field">
+        <label id="lbl-device">DEVICE TYPE <span class="req">*</span></label>
+        <input type="text" id="inp-device" placeholder="Laptop, Desktop, Tablet..." />
+      </div>
+      <div class="field">
+        <label id="lbl-brand">BRAND & MODEL</label>
+        <input type="text" id="inp-brand" placeholder="HP Pavilion, Dell XPS, MacBook..." />
+      </div>
+      <div class="field">
+        <label id="lbl-issue">DESCRIBE THE ISSUE <span class="req">*</span></label>
+        <textarea id="inp-issue" rows="4" placeholder="Tell us what's happening with your device..."></textarea>
+      </div>
+      <div class="error-msg" id="err-msg" style="display:none"></div>
+      <button class="submit-btn" id="btn-submit" onclick="handleSubmit()">⚡ ANALYZE &amp; QUOTE</button>
+    </div>
+    <div id="step-loading" class="loading">
+      <div class="spinner"></div>
+      <div class="loading-label" id="txt-analyzing">Scanning device profile...</div>
+      <div class="loading-dots" id="dots">...</div>
+      <div class="progress-bars">
+        <div class="progress-item"><div class="progress-label">DEVICE PROFILE</div><div class="progress-track"><div class="progress-fill" style="width:72%"></div></div></div>
+        <div class="progress-item"><div class="progress-label">ISSUE PATTERN</div><div class="progress-track"><div class="progress-fill" style="width:85%"></div></div></div>
+        <div class="progress-item"><div class="progress-label">PRICE MATRIX</div><div class="progress-track"><div class="progress-fill" style="width:91%"></div></div></div>
+      </div>
+    </div>
+    <div id="step-result" class="result">
+      <div class="result-cards">
+        <div class="result-card"><div class="card-icon">💰</div><div class="card-label" id="lbl-price">PRICE RANGE</div><div class="card-value" id="val-price">—</div></div>
+        <div class="result-card cyan"><div class="card-icon">⏱</div><div class="card-label cyan-label" id="lbl-time">EST. REPAIR TIME</div><div class="card-value cyan-value" id="val-time">—</div></div>
+      </div>
+      <div class="result-block"><div class="block-label" id="lbl-diagnosis">▸ DIAGNOSIS</div><div class="block-text" id="val-diagnosis"></div></div>
+      <div class="result-block cyan-block"><div class="block-label cyan-label" id="lbl-followup">▸ FOLLOW-UP MESSAGE</div><div class="block-text small" id="val-followup"></div></div>
+      <div class="action-btns">
+        <button class="action-btn" id="btn-copy" onclick="handleCopy()">⎘ COPY MESSAGE</button>
+        <button class="action-btn green-btn" onclick="handleReset()" id="btn-reset">↺ NEW REQUEST</button>
+      </div>
+    </div>
+    <div class="footer">
+      <div class="divider" style="margin-bottom:16px"></div>
+      <span id="txt-footer">Mobile Repair · Hallandale Beach to Boca Raton · 561-849-6319</span>
+    </div>
+  </div>
+  <script>
+    const TX = {
+      en: { subtitle:"AI Repair Assistant", name:"FULL NAME", device:"DEVICE TYPE", brand:"BRAND & MODEL", issue:"DESCRIBE THE ISSUE", submit:"⚡ ANALYZE & QUOTE", analyzing:"Scanning device profile...", price:"PRICE RANGE", time:"EST. REPAIR TIME", diagnosis:"▸ DIAGNOSIS", followup:"▸ FOLLOW-UP MESSAGE", copy:"⎘ COPY MESSAGE", copied:"✓ COPIED!", reset:"↺ NEW REQUEST", required:"⚠ Please fill in all required fields.", error:"⚠ Something went wrong. Please try again.", footer:"Mobile Repair · Hallandale Beach to Boca Raton · 561-849-6319" },
+      es: { subtitle:"Asistente de Reparación IA", name:"NOMBRE COMPLETO", device:"TIPO DE DISPOSITIVO", brand:"MARCA Y MODELO", issue:"DESCRIBE EL PROBLEMA", submit:"⚡ ANALIZAR Y COTIZAR", analyzing:"Escaneando perfil del dispositivo...", price:"RANGO DE PRECIO", time:"TIEMPO EST. DE REPARACIÓN", diagnosis:"▸ DIAGNÓSTICO", followup:"▸ MENSAJE DE SEGUIMIENTO", copy:"⎘ COPIAR MENSAJE", copied:"✓ ¡COPIADO!", reset:"↺ NUEVA SOLICITUD", required:"⚠ Por favor completa todos los campos requeridos.", error:"⚠ Algo salió mal. Por favor intenta de nuevo.", footer:"Reparación Móvil · Hallandale Beach a Boca Raton · 561-849-6319" }
+    };
+    let lang = 'en';
+    function setLang(l) {
+      lang = l;
+      document.getElementById('btn-en').classList.toggle('active', l==='en');
+      document.getElementById('btn-es').classList.toggle('active', l==='es');
+      const t = TX[l];
+      document.getElementById('txt-subtitle').textContent = t.subtitle;
+      document.getElementById('lbl-name').innerHTML = t.name+' <span class="req">*</span>';
+      document.getElementById('lbl-device').innerHTML = t.device+' <span class="req">*</span>';
+      document.getElementById('lbl-brand').textContent = t.brand;
+      document.getElementById('lbl-issue').innerHTML = t.issue+' <span class="req">*</span>';
+      document.getElementById('btn-submit').textContent = t.submit;
+      document.getElementById('txt-analyzing').textContent = t.analyzing;
+      document.getElementById('lbl-price').textContent = t.price;
+      document.getElementById('lbl-time').textContent = t.time;
+      document.getElementById('lbl-diagnosis').textContent = t.diagnosis;
+      document.getElementById('lbl-followup').textContent = t.followup;
+      document.getElementById('btn-copy').textContent = t.copy;
+      document.getElementById('btn-reset').textContent = t.reset;
+      document.getElementById('txt-footer').textContent = t.footer;
+      const ph = l==='en' ? {name:'John Smith',device:'Laptop, Desktop, Tablet...',brand:'HP Pavilion, Dell XPS, MacBook...',issue:"Tell us what's happening with your device..."} : {name:'Juan Pérez',device:'Laptop, Escritorio, Tableta...',brand:'HP Pavilion, Dell XPS, MacBook...',issue:'Cuéntanos qué le pasa a tu dispositivo...'};
+      document.getElementById('inp-name').placeholder = ph.name;
+      document.getElementById('inp-device').placeholder = ph.device;
+      document.getElementById('inp-brand').placeholder = ph.brand;
+      document.getElementById('inp-issue').placeholder = ph.issue;
+    }
+    function showStep(step) {
+      ['step-form','step-loading','step-result'].forEach(id => { const el=document.getElementById(id); el.style.display='none'; el.style.animation=''; });
+      const el = document.getElementById('step-'+step);
+      if (step==='loading') el.style.display='flex'; else el.style.display='block';
+      void el.offsetWidth;
+      el.style.animation='fadeInUp 0.4s ease';
+    }
+    let dotsInterval=null;
+    function startDots() { let n=1; dotsInterval=setInterval(()=>{ document.getElementById('dots').textContent='.'.repeat(n); n=(n%4)+1; },400); }
+    function stopDots() { clearInterval(dotsInterval); }
+    async function handleSubmit() {
+      const t=TX[lang];
+      const name=document.getElementById('inp-name').value.trim();
+      const device=document.getElementById('inp-device').value.trim();
+      const brand=document.getElementById('inp-brand').value.trim();
+      const issue=document.getElementById('inp-issue').value.trim();
+      const errEl=document.getElementById('err-msg');
+      if (!name||!device||!issue) { errEl.textContent=t.required; errEl.style.display='block'; return; }
+      errEl.style.display='none';
+      showStep('loading'); startDots();
+      const userMsg=lang==='en' ? `Customer: ${name}\nDevice: ${device}${brand?` (${brand})`:''}\nIssue: ${issue}\n\nRespond in English.` : `Cliente: ${name}\nDispositivo: ${device}${brand?` (${brand})`:''}\nProblema: ${issue}\n\nResponde en Español.`;
+      try {
+        const res=await fetch('/api/chat',{ method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ model:'claude-haiku-4-5-20251001', max_tokens:1000, system:`You are the AI diagnostic assistant for Glitch Tech Services, a bilingual (English/Spanish) mobile computer repair business serving Hallandale Beach to Boca Raton, FL. You specialize in laptops, desktops, tablets, and phones.\n\nGiven a customer's device info and issue, respond ONLY with a valid JSON object (no markdown, no code fences, no extra text):\n{"diagnosis":"detailed diagnosis of the likely issue","estimatedTime":"realistic repair time estimate","priceRange":"USD price range for the repair (e.g. $80–$120)","followUpMessage":"a professional, friendly follow-up/confirmation message the technician will send to the customer — include customer name, the issue, next steps, and contact info: 561-849-6319 / glitchtechservices.com"}`, messages:[{role:'user',content:userMsg}] }) });
+        const data=await res.json();
+        const raw=data.content?.[0]?.text||'';
+        const clean=raw.replace(/```json|```/g,'').trim();
+        const parsed=JSON.parse(clean);
+        document.getElementById('val-price').textContent=parsed.priceRange||'—';
+        document.getElementById('val-time').textContent=parsed.estimatedTime||'—';
+        document.getElementById('val-diagnosis').textContent=parsed.diagnosis||'';
+        document.getElementById('val-followup').textContent=parsed.followUpMessage||'';
+        stopDots(); showStep('result');
+      } catch(err) { stopDots(); showStep('form'); errEl.textContent=TX[lang].error; errEl.style.display='block'; }
+    }
+    function handleCopy() {
+      const text=document.getElementById('val-followup').textContent;
+      navigator.clipboard.writeText(text).then(()=>{ const btn=document.getElementById('btn-copy'); btn.textContent=TX[lang].copied; btn.classList.add('copied'); setTimeout(()=>{ btn.textContent=TX[lang].copy; btn.classList.remove('copied'); },2000); });
+    }
+    function handleReset() {
+      document.getElementById('inp-name').value='';
+      document.getElementById('inp-device').value='';
+      document.getElementById('inp-brand').value='';
+      document.getElementById('inp-issue').value='';
+      document.getElementById('err-msg').style.display='none';
+      showStep('form');
+    }
+    showStep('form');
+  </script>
+</body>
+</html>
