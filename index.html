@@ -204,7 +204,16 @@
       showStep('loading'); startDots();
       const userMsg=lang==='en' ? `Customer: ${name}\nDevice: ${device}${brand?` (${brand})`:''}\nIssue: ${issue}\n\nRespond in English.` : `Cliente: ${name}\nDispositivo: ${device}${brand?` (${brand})`:''}\nProblema: ${issue}\n\nResponde en Español.`;
       try {
-        const res=await fetch('/api/chat',{ method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ model:'claude-haiku-4-5-20251001', max_tokens:1000, system:`You are the AI diagnostic assistant for Glitch Tech Services, a bilingual (English/Spanish) mobile computer repair business serving Hallandale Beach to Boca Raton, FL. You specialize in laptops, desktops, tablets, and phones.\n\nGiven a customer's device info and issue, respond ONLY with a valid JSON object (no markdown, no code fences, no extra text):\n{"diagnosis":"detailed diagnosis of the likely issue","estimatedTime":"realistic repair time estimate","priceRange":"USD price range for the repair (e.g. $80–$120)","followUpMessage":"a professional, friendly follow-up/confirmation message the technician will send to the customer — include customer name, the issue, next steps, and contact info: 561-849-6319 / glitchtechservices.com"}`, messages:[{role:'user',content:userMsg}] }) });
+        const payload = { model:'claude-haiku-4-5-20251001', max_tokens:1000, system:`You are the AI diagnostic assistant for Glitch Tech Services, a bilingual (English/Spanish) mobile computer repair business serving Hallandale Beach to Boca Raton, FL. You specialize in laptops, desktops, tablets, and phones.\n\nGiven a customer's device info and issue, respond ONLY with a valid JSON object (no markdown, no code fences, no extra text):\n{"diagnosis":"detailed diagnosis of the likely issue","estimatedTime":"realistic repair time estimate","priceRange":"USD price range for the repair (e.g. $80–$120)","followUpMessage":"a professional, friendly follow-up/confirmation message the technician will send to the customer — include customer name, the issue, next steps, and contact info: 561-849-6319 / glitchtechservices.com"}`, messages:[{role:'user',content:userMsg}] };
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 30000);
+        const res = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+          signal: controller.signal
+        });
+        clearTimeout(timeout);
         const data=await res.json();
         const raw=data.content?.[0]?.text||'';
         const clean=raw.replace(/```json|```/g,'').replace(/[\x00-\x1F\x7F]/g,'').trim();
