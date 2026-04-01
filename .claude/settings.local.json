@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cp glitch-tech-website/index.html .)",
+      "Bash(cp glitch-tech-website/index-es.html .)",
+      "Bash(cp glitch-tech-website/customer-portal.html .)",
+      "Bash(cp glitch-tech-website/customer-portal-es.html .)",
+      "Bash(cp glitch-tech-website/admin-panel.html .)"
+    ]
+  }
+}

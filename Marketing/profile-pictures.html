@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Glitch Tech - Profile Picture</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: #f0f0f0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 40px;
+            font-family: Arial, sans-serif;
+        }
+
+        .instructions {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 800px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .instructions h1 {
+            color: #00ff41;
+            margin-bottom: 20px;
+        }
+
+        .instructions p {
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        /* Profile Picture Designs */
+        .profile-pic-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 40px;
+            max-width: 1400px;
+            width: 100%;
+        }
+
+        .profile-pic {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .profile-pic h3 {
+            margin-top: 0;
+            color: #333;
+        }
+
+        /* Design 1: Logo Only (Square) */
+        .pic-design-1 {
+            width: 400px;
+            height: 400px;
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1e37 100%);
+            border: 3px solid #00ff41;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            margin: 0 auto;
+        }
+
+        .pic-design-1::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 20px,
+                rgba(0,255,65,0.03) 20px,
+                rgba(0,255,65,0.03) 21px
+            );
+        }
+
+        .pic-design-1 .logo {
+            font-family: Arial Black, sans-serif;
+            font-size: 48px;
+            font-weight: 900;
+            color: #00ff41;
+            text-shadow: 0 0 20px rgba(0,255,65,0.8);
+            z-index: 1;
+            letter-spacing: 2px;
+        }
+
+        /* Design 2: Logo + Icon */
+        .pic-design-2 {
+            width: 400px;
+            height: 400px;
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1e37 100%);
+            border: 3px solid #00ff41;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            margin: 0 auto;
+            gap: 10px;
+        }
+
+        .pic-design-2::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 20px,
+                rgba(0,255,65,0.03) 20px,
+                rgba(0,255,65,0.03) 21px
+            );
+        }
+
+        .pic-design-2 .logo {
+            font-family: Arial Black, sans-serif;
+            font-size: 42px;
+            font-weight: 900;
+            color: #00ff41;
+            text-shadow: 0 0 20px rgba(0,255,65,0.8);
+            z-index: 1;
+            letter-spacing: 2px;
+        }
+
+        .pic-design-2 .icon {
+            font-size: 64px;
+            z-index: 1;
+        }
+
+        /* Design 3: Minimal Clean */
+        .pic-design-3 {
+            width: 400px;
+            height: 400px;
+            background: #00ff41;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+        }
+
+        .pic-design-3 .logo {
+            font-family: Arial Black, sans-serif;
+            font-size: 56px;
+            font-weight: 900;
+            color: #0a0e27;
+            letter-spacing: 2px;
+        }
+
+        /* Design 4: With Tagline */
+        .pic-design-4 {
+            width: 400px;
+            height: 400px;
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1e37 100%);
+            border: 3px solid #00ff41;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            margin: 0 auto;
+            gap: 5px;
+            padding: 40px;
+        }
+
+        .pic-design-4::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 20px,
+                rgba(0,255,65,0.03) 20px,
+                rgba(0,255,65,0.03) 21px
+            );
+        }
+
+        .pic-design-4 .logo {
+            font-family: Arial Black, sans-serif;
+            font-size: 44px;
+            font-weight: 900;
+            color: #00ff41;
+            text-shadow: 0 0 20px rgba(0,255,65,0.8);
+            z-index: 1;
+            letter-spacing: 2px;
+        }
+
+        .pic-design-4 .tagline {
+            font-size: 14px;
+            color: #888;
+            letter-spacing: 3px;
+            z-index: 1;
+            text-align: center;
+        }
+
+        .download-btn {
+            background: #00ff41;
+            color: #0a0e27;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+
+        .download-btn:hover {
+            background: #00cc33;
+        }
+
+        @media print {
+            body {
+                background: white;
+            }
+            .instructions, .download-btn {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="instructions">
+        <h1>🎨 Glitch Tech Profile Pictures</h1>
+        <p><strong>Choose your favorite design below!</strong></p>
+        <p><strong>How to save:</strong></p>
+        <ol>
+            <li>Right-click on the design you like</li>
+            <li>Click "Save image as..."</li>
+            <li>Save as PNG</li>
+            <li>Upload to Nextdoor/OfferUp/Facebook</li>
+        </ol>
+        <p><strong>OR</strong> take a screenshot of just the circle and crop it square.</p>
+        <p><strong>Recommended:</strong> Design 1 (Logo Only) - Clean and professional</p>
+    </div>
+
+    <div class="profile-pic-container">
+        <!-- Design 1 -->
+        <div class="profile-pic">
+            <h3>Design 1: Logo Only (RECOMMENDED)</h3>
+            <div class="pic-design-1">
+                <div class="logo">GLITCH<br>TECH</div>
+            </div>
+            <p style="margin-top: 15px; color: #666;">Clean, professional, matches your brand</p>
+        </div>
+
+        <!-- Design 2 -->
+        <div class="profile-pic">
+            <h3>Design 2: Logo + Computer Icon</h3>
+            <div class="pic-design-2">
+                <div class="icon">💻</div>
+                <div class="logo">GLITCH<br>TECH</div>
+            </div>
+            <p style="margin-top: 15px; color: #666;">Shows what you do at a glance</p>
+        </div>
+
+        <!-- Design 3 -->
+        <div class="profile-pic">
+            <h3>Design 3: Minimal Green</h3>
+            <div class="pic-design-3">
+                <div class="logo">GT</div>
+            </div>
+            <p style="margin-top: 15px; color: #666;">Simple, pops in feed, memorable</p>
+        </div>
+
+        <!-- Design 4 -->
+        <div class="profile-pic">
+            <h3>Design 4: Logo + Tagline</h3>
+            <div class="pic-design-4">
+                <div class="logo">GLITCH<br>TECH</div>
+                <div class="tagline">COMPUTER REPAIR</div>
+            </div>
+            <p style="margin-top: 15px; color: #666;">Most informative, shows service</p>
+        </div>
+    </div>
+
+    <div class="instructions" style="margin-top: 40px;">
+        <h2>💡 Pro Tips:</h2>
+        <ul>
+            <li><strong>Square format works best</strong> - All platforms support it</li>
+            <li><strong>Keep it simple</strong> - Profile pics are small, don't overcomplicate</li>
+            <li><strong>Consistency matters</strong> - Use same pic across all platforms</li>
+            <li><strong>High contrast</strong> - Green on dark = pops in feed</li>
+        </ul>
+        <h2>📱 Where to Use:</h2>
+        <ul>
+            <li>✅ Nextdoor profile pic</li>
+            <li>✅ OfferUp profile pic</li>
+            <li>✅ Facebook profile/business page</li>
+            <li>✅ Google Business (when you set it up)</li>
+            <li>✅ Instagram (if you make one)</li>
+        </ul>
+    </div>
+</body>
+</html>
