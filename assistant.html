@@ -90,6 +90,8 @@
     @keyframes spin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
     @keyframes flicker { 0%,95%,100%{opacity:1} 96%{opacity:0.6} 97%{opacity:1} 98%{opacity:0.4} }
   </style>
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <script>emailjs.init('BhwNYlt7xI7uA96ys');</script>
 </head>
 <body>
   <div class="corner corner-tl"></div>
@@ -224,6 +226,16 @@
         document.getElementById('val-time').textContent=parsed.estimatedTime||'—';
         document.getElementById('val-diagnosis').textContent=parsed.diagnosis||'';
         document.getElementById('val-followup').textContent=parsed.followUpMessage||'';
+        emailjs.send('service_udyz9uu', 'template_ydwk8e7', {
+          customer_name: name,
+          device: device + (brand ? ' (' + brand + ')' : ''),
+          issue: issue,
+          price: parsed.priceRange || '—',
+          repair_time: parsed.estimatedTime || '—',
+          diagnosis: parsed.diagnosis || '—'
+        }).catch(function(err) {
+          console.log('Email notification failed:', err);
+        });
         stopDots(); showStep('result');
       } catch (err) {
         stopDots();
