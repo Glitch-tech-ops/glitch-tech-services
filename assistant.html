@@ -1,290 +1,1010 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Glitch Tech Services — AI Repair Assistant</title>
-  <meta name="description" content="Glitch Tech Services — Bilingual mobile computer repair from Hallandale Beach to Boca Raton. Get an instant AI-powered diagnosis and quote." />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@700;900&display=swap" rel="stylesheet" />
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root {
-      --green: #00ff9f; --cyan: #00e5ff; --bg: #050a05; --surface: #0a1a0e;
-      --text: #c8ffd4; --muted: #00ff9f88; --red: #ff4d4d;
-    }
-    body {
-      min-height: 100vh; background: var(--bg);
-      background-image: radial-gradient(ellipse at 50% 0%, #001a0a 0%, #050a05 60%);
-      font-family: 'Share Tech Mono', monospace; color: var(--text);
-      display: flex; flex-direction: column; align-items: center;
-      padding: 32px 16px 64px; position: relative; overflow-x: hidden;
-    }
-    body::before {
-      content: ''; position: fixed; inset: 0;
-      background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,255,159,0.015) 2px, rgba(0,255,159,0.015) 4px);
-      pointer-events: none; z-index: 0;
-    }
-    body::after {
-      content: ''; position: fixed; top: 0; left: 0; right: 0; height: 60px;
-      background: linear-gradient(transparent, rgba(0,255,159,0.04), transparent);
-      animation: scanline 6s linear infinite; pointer-events: none; z-index: 1;
-    }
-    .corner { position: fixed; width: 40px; height: 40px; pointer-events: none; z-index: 0; }
-    .corner-tl { top:16px; left:16px; border-top:2px solid #00ff9f44; border-left:2px solid #00ff9f44; }
-    .corner-tr { top:16px; right:16px; border-top:2px solid #00ff9f44; border-right:2px solid #00ff9f44; }
-    .corner-bl { bottom:16px; left:16px; border-bottom:2px solid #00ff9f44; border-left:2px solid #00ff9f44; }
-    .corner-br { bottom:16px; right:16px; border-bottom:2px solid #00ff9f44; border-right:2px solid #00ff9f44; }
-    .container { width:100%; max-width:560px; position:relative; z-index:2; }
-    .lang-toggle { display:flex; justify-content:flex-end; gap:8px; margin-bottom:24px; }
-    .lang-btn { background:transparent; border:1px solid #00ff9f44; color:#00ff9f88; padding:4px 12px; font-family:'Share Tech Mono',monospace; font-size:11px; letter-spacing:2px; cursor:pointer; transition:all 0.2s; }
-    .lang-btn.active { background:#00ff9f22; border-color:var(--green); color:var(--green); }
-    .logo { font-family:'Orbitron',sans-serif; font-size:clamp(32px,8vw,52px); font-weight:900; color:var(--green); letter-spacing:4px; text-shadow:0 0 30px #00ff9f88,0 0 60px #00ff9f44; animation:glitch 8s infinite,flicker 12s infinite; text-align:center; line-height:1; margin-bottom:6px; }
-    .logo span { color:var(--cyan); }
-    .subtitle { font-size:11px; letter-spacing:6px; color:var(--muted); text-transform:uppercase; text-align:center; margin-bottom:8px; }
-    .divider { width:100%; height:1px; background:linear-gradient(90deg,transparent,#00ff9f88,transparent); margin-bottom:32px; }
-    .field { margin-bottom:20px; }
-    label { display:block; font-size:11px; letter-spacing:3px; color:var(--muted); margin-bottom:6px; }
-    label .req { color:var(--red); }
-    input, textarea { width:100%; background:var(--surface); border:1px solid #00ff9f44; border-left:3px solid var(--green); color:var(--text); padding:12px 16px; font-family:'Share Tech Mono',monospace; font-size:14px; outline:none; transition:border-color 0.2s,box-shadow 0.2s; resize:vertical; }
-    input::placeholder, textarea::placeholder { color:#00ff9f44; }
-    input:focus, textarea:focus { border-color:var(--green); box-shadow:0 0 16px #00ff9f22; }
-    .error-msg { color:var(--red); font-size:12px; letter-spacing:2px; text-align:center; margin-bottom:16px; }
-    .submit-btn { width:100%; background:linear-gradient(135deg,#003d1a,#005c28); border:1px solid var(--green); color:var(--green); padding:16px; font-family:'Orbitron',sans-serif; font-size:14px; font-weight:700; letter-spacing:3px; cursor:pointer; text-transform:uppercase; animation:pulseGreen 3s ease-in-out infinite; transition:background 0.2s; }
-    .submit-btn:hover { background:linear-gradient(135deg,#005c28,#007a35); }
-    .loading { text-align:center; padding:80px 0; animation:fadeInUp 0.3s ease; display:none; flex-direction:column; align-items:center; }
-    .spinner { width:60px; height:60px; margin:0 auto 32px; border:2px solid #00ff9f22; border-top:2px solid var(--green); border-radius:50%; animation:spin 0.8s linear infinite; }
-    .loading-label { font-family:'Orbitron',sans-serif; font-size:13px; letter-spacing:4px; color:var(--green); }
-    .loading-dots { color:#00ff9f66; margin-top:12px; font-size:18px; animation:blink 1s infinite; }
-    .progress-bars { margin-top:40px; text-align:left; width:100%; }
-    .progress-item { margin-bottom:16px; }
-    .progress-label { font-size:10px; letter-spacing:3px; color:#00ff9f66; margin-bottom:4px; }
-    .progress-track { height:4px; background:var(--surface); border:1px solid #00ff9f22; }
-    .progress-fill { height:100%; background:linear-gradient(90deg,var(--green),var(--cyan)); animation:pulseGreen 2s ease-in-out infinite; }
-    .result { animation:fadeInUp 0.5s ease; display:none; }
-    .result-cards { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:20px; }
-    .result-card { background:var(--surface); border:1px solid #00ff9f44; border-top:2px solid var(--green); padding:16px; text-align:center; }
-    .result-card.cyan { border-top-color:var(--cyan); border-color:#00e5ff44; }
-    .card-icon { font-size:22px; margin-bottom:6px; }
-    .card-label { font-size:10px; letter-spacing:3px; color:var(--muted); margin-bottom:6px; }
-    .card-label.cyan-label { color:#00e5ff88; }
-    .card-value { font-size:15px; color:var(--green); font-family:'Orbitron',sans-serif; font-weight:700; }
-    .card-value.cyan-value { color:var(--cyan); }
-    .result-block { background:var(--surface); border:1px solid #00ff9f33; border-left:3px solid var(--green); padding:20px; margin-bottom:16px; }
-    .result-block.cyan-block { border-color:#00e5ff33; border-left-color:var(--cyan); }
-    .block-label { font-size:10px; letter-spacing:3px; color:var(--muted); margin-bottom:10px; }
-    .block-label.cyan-label { color:#00e5ff88; }
-    .block-text { font-size:14px; line-height:1.7; color:var(--text); white-space:pre-wrap; }
-    .block-text.small { font-size:13px; line-height:1.8; }
-    .action-btns { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
-    .action-btn { background:transparent; border:1px solid var(--cyan); color:var(--cyan); padding:14px; font-family:'Share Tech Mono',monospace; font-size:12px; letter-spacing:2px; cursor:pointer; transition:all 0.2s; }
-    .action-btn.green-btn { border-color:#00ff9f66; color:#00ff9f99; }
-    .action-btn.green-btn:hover { border-color:var(--green); color:var(--green); }
-    .action-btn.copied { background:#00ff9f22; color:var(--green); border-color:var(--green); }
-    .footer { margin-top:48px; text-align:center; font-size:10px; letter-spacing:2px; color:#00ff9f44; line-height:1.8; }
-    @keyframes scanline { 0%{transform:translateY(-100%)} 100%{transform:translateY(100vh)} }
-    @keyframes glitch { 0%,90%,100%{clip-path:none;transform:none} 92%{clip-path:polygon(0 20%,100% 20%,100% 40%,0 40%);transform:translateX(-4px)} 94%{clip-path:polygon(0 60%,100% 60%,100% 80%,0 80%);transform:translateX(4px)} 96%{clip-path:polygon(0 10%,100% 10%,100% 30%,0 30%);transform:translateX(-2px)} }
-    @keyframes pulseGreen { 0%,100%{box-shadow:0 0 8px #00ff9f44,inset 0 0 8px #00ff9f11} 50%{box-shadow:0 0 20px #00ff9f88,inset 0 0 12px #00ff9f22} }
-    @keyframes fadeInUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
-    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
-    @keyframes spin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
-    @keyframes flicker { 0%,95%,100%{opacity:1} 96%{opacity:0.6} 97%{opacity:1} 98%{opacity:0.4} }
-  </style>
-  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-  <script>emailjs.init('BhwNYlt7xI7uA96ys');</script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Glitch Tech Services — AI Quote Assistant</title>
+    <meta name="description" content="Get a quick, honest estimate for your computer repair. Bilingual (English / Español) — Boca Raton to Hallandale Beach." />
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%23fdfaf6'/%3E%3Cpath d='M30 20 L50 50 L30 80 L40 80 L60 50 L40 20 Z' fill='%23e07856' opacity='0.85'/%3E%3Cpath d='M45 20 L65 50 L45 80 L55 80 L75 50 L55 20 Z' fill='%23e07856'/%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg: #fdfaf6;
+            --surface: #ffffff;
+            --surface-soft: #f7f2ec;
+            --ink: #1f1d1b;
+            --ink-muted: #6b6560;
+            --coral: #e07856;
+            --coral-dark: #c95f3e;
+            --coral-soft: #fdeee7;
+            --border: #ece5de;
+            --danger: #c0392b;
+            --shadow-sm: 0 1px 3px rgba(50, 30, 20, 0.04);
+            --shadow: 0 2px 12px rgba(50, 30, 20, 0.05);
+            --shadow-lg: 0 8px 32px rgba(50, 30, 20, 0.08);
+            --radius: 14px;
+            --radius-sm: 10px;
+            --max-width: 720px;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--ink);
+            font-size: 17px;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            min-height: 100vh;
+        }
+
+        h1, h2, h3 {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            line-height: 1.25;
+            letter-spacing: -0.01em;
+            color: var(--ink);
+        }
+
+        a { color: inherit; }
+
+        .container {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header (matches homepage) */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            background: rgba(253, 250, 246, 0.92);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+        }
+        .header-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            padding: 16px 0;
+            flex-wrap: wrap;
+        }
+        .logo {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-weight: 700;
+            font-size: 1.3rem;
+            letter-spacing: -0.02em;
+            text-decoration: none;
+            color: var(--ink);
+        }
+        .logo span { color: var(--coral); }
+        .header-nav {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+        .phone-link {
+            color: var(--coral);
+            font-weight: 600;
+            text-decoration: none;
+            font-size: 0.98rem;
+            transition: color 0.15s;
+        }
+        .phone-link:hover { color: var(--coral-dark); }
+        .nav-link {
+            color: var(--ink-muted);
+            text-decoration: none;
+            font-size: 0.92rem;
+            transition: color 0.15s;
+        }
+        .nav-link:hover { color: var(--coral); }
+
+        .lang-toggle {
+            display: inline-flex;
+            gap: 4px;
+            align-items: center;
+            font-size: 0.9rem;
+        }
+        .lang-toggle button {
+            background: none;
+            border: none;
+            font-family: inherit;
+            color: var(--ink-muted);
+            cursor: pointer;
+            padding: 2px 6px;
+            font-size: 0.9rem;
+            border-radius: 6px;
+            transition: color 0.15s, background 0.15s;
+        }
+        .lang-toggle button:hover { color: var(--coral); }
+        .lang-toggle button.active {
+            color: var(--ink);
+            font-weight: 600;
+        }
+        .lang-toggle .sep { color: var(--border); user-select: none; }
+
+        /* Intro */
+        .intro {
+            padding: 44px 0 20px;
+            text-align: center;
+        }
+        .eyebrow {
+            display: inline-block;
+            font-size: 0.78rem;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--coral);
+            background: var(--coral-soft);
+            padding: 5px 12px;
+            border-radius: 999px;
+            margin-bottom: 14px;
+        }
+        .intro h1 {
+            font-size: clamp(1.75rem, 4vw, 2.3rem);
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        .intro p {
+            color: var(--ink-muted);
+            font-size: 1.02rem;
+            max-width: 540px;
+            margin: 0 auto;
+        }
+
+        /* Card */
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 28px;
+            margin-top: 24px;
+            position: relative;
+        }
+
+        /* Locked state for the form area before disclosure is accepted */
+        .locked {
+            filter: blur(2px) saturate(0.7);
+            opacity: 0.55;
+            pointer-events: none;
+            user-select: none;
+        }
+
+        .field { margin-bottom: 18px; }
+        label {
+            display: block;
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: var(--ink);
+            margin-bottom: 6px;
+        }
+        label .req { color: var(--coral); }
+        .field-hint {
+            display: block;
+            font-size: 0.82rem;
+            color: var(--ink-muted);
+            margin-top: 4px;
+        }
+        input, textarea {
+            width: 100%;
+            background: var(--surface);
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-sm);
+            color: var(--ink);
+            padding: 12px 14px;
+            font-family: inherit;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.15s, box-shadow 0.15s;
+            resize: vertical;
+        }
+        input::placeholder, textarea::placeholder { color: #b8afa7; }
+        input:focus, textarea:focus {
+            border-color: var(--coral);
+            box-shadow: 0 0 0 3px var(--coral-soft);
+        }
+
+        .error-msg {
+            color: var(--danger);
+            background: #fdecea;
+            border: 1px solid #f5c6c1;
+            padding: 10px 14px;
+            border-radius: var(--radius-sm);
+            font-size: 0.92rem;
+            margin-bottom: 14px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 22px;
+            border-radius: var(--radius-sm);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            font-family: inherit;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.15s, background 0.15s, border-color 0.15s, color 0.15s;
+            white-space: nowrap;
+        }
+        .btn-primary {
+            background: var(--coral);
+            color: #fff;
+            width: 100%;
+            padding: 14px 22px;
+        }
+        .btn-primary:hover {
+            background: var(--coral-dark);
+            transform: translateY(-1px);
+        }
+        .btn-primary:disabled {
+            background: #d9d3cd;
+            color: #fff;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .btn-outline {
+            background: transparent;
+            color: var(--ink);
+            border: 1.5px solid var(--border);
+        }
+        .btn-outline:hover {
+            border-color: var(--coral);
+            color: var(--coral);
+        }
+
+        .reassure {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+            justify-content: center;
+            font-size: 0.88rem;
+            color: var(--ink-muted);
+            margin-top: 16px;
+        }
+        .reassure span { display: inline-flex; align-items: center; gap: 5px; }
+
+        /* Loading */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 40px 10px;
+        }
+        .spinner {
+            width: 44px;
+            height: 44px;
+            margin: 0 auto 18px;
+            border: 3px solid var(--coral-soft);
+            border-top-color: var(--coral);
+            border-radius: 50%;
+            animation: spin 0.9s linear infinite;
+        }
+        .loading-label {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-weight: 600;
+            color: var(--ink);
+            font-size: 1.05rem;
+        }
+        .loading-dots { color: var(--coral); font-weight: 600; }
+        .loading-sub {
+            color: var(--ink-muted);
+            font-size: 0.92rem;
+            margin-top: 6px;
+        }
+
+        /* Result */
+        .result { display: none; }
+        .result-cards {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+        .result-card {
+            background: var(--surface-soft);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 16px;
+            text-align: center;
+        }
+        .card-icon { font-size: 22px; margin-bottom: 4px; }
+        .card-label {
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--ink-muted);
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+        .card-value {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--coral);
+        }
+
+        .result-block {
+            background: var(--surface-soft);
+            border: 1px solid var(--border);
+            border-left: 3px solid var(--coral);
+            border-radius: var(--radius-sm);
+            padding: 16px 18px;
+            margin-bottom: 14px;
+        }
+        .block-label {
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--ink-muted);
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        .block-text {
+            font-size: 0.98rem;
+            line-height: 1.6;
+            color: var(--ink);
+            white-space: pre-wrap;
+        }
+
+        .action-btns {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 6px;
+        }
+        .action-btn {
+            background: transparent;
+            border: 1.5px solid var(--border);
+            color: var(--ink);
+            padding: 12px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: var(--radius-sm);
+            transition: all 0.15s;
+        }
+        .action-btn:hover {
+            border-color: var(--coral);
+            color: var(--coral);
+        }
+        .action-btn.copied {
+            background: var(--coral-soft);
+            color: var(--coral-dark);
+            border-color: var(--coral);
+        }
+
+        .disclaimer {
+            margin-top: 18px;
+            font-size: 0.82rem;
+            color: var(--ink-muted);
+            text-align: center;
+            line-height: 1.5;
+        }
+
+        /* Footer */
+        footer {
+            margin-top: 48px;
+            padding: 24px 0 40px;
+            border-top: 1px solid var(--border);
+            text-align: center;
+            color: var(--ink-muted);
+            font-size: 0.88rem;
+        }
+        footer a { color: var(--coral); text-decoration: none; font-weight: 600; }
+        footer a:hover { color: var(--coral-dark); }
+
+        /* Turnstile placeholder (hidden unless activated) */
+        .turnstile-wrap {
+            display: none;
+            margin: 10px 0 16px;
+            justify-content: center;
+        }
+        .turnstile-wrap.on { display: flex; }
+
+        /* Disclosure modal */
+        .modal-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(31, 29, 27, 0.55);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            z-index: 200;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            animation: fadeIn 0.2s ease;
+        }
+        .modal-backdrop[hidden] { display: none; }
+        .modal {
+            background: var(--surface);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-lg);
+            max-width: 520px;
+            width: 100%;
+            padding: 28px;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: slideUp 0.25s ease;
+        }
+        .modal h2 {
+            font-size: 1.3rem;
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+        .modal p {
+            color: var(--ink-muted);
+            margin-bottom: 12px;
+            font-size: 0.97rem;
+            line-height: 1.55;
+        }
+        .modal ul {
+            margin: 10px 0 14px 20px;
+            color: var(--ink-muted);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+        .modal ul li { margin-bottom: 6px; }
+        .modal-actions {
+            margin-top: 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .modal-actions .btn { width: 100%; text-align: center; }
+
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+
+        @media (max-width: 520px) {
+            .result-cards { grid-template-columns: 1fr; }
+            .action-btns { grid-template-columns: 1fr; }
+            .intro { padding-top: 28px; }
+            .card { padding: 22px; }
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <script>emailjs.init('BhwNYlt7xI7uA96ys');</script>
 </head>
 <body>
-  <div class="corner corner-tl"></div>
-  <div class="corner corner-tr"></div>
-  <div class="corner corner-bl"></div>
-  <div class="corner corner-br"></div>
-  <div class="container">
-    <div class="lang-toggle">
-      <button class="lang-btn active" onclick="setLang('en')" id="btn-en">EN</button>
-      <button class="lang-btn" onclick="setLang('es')" id="btn-es">ES</button>
+
+<header>
+    <div class="container">
+        <div class="header-inner">
+            <a href="index.html" class="logo">Glitch<span>Tech</span></a>
+            <nav class="header-nav">
+                <a href="tel:+15618496319" class="phone-link">📞 (561) 849-6319</a>
+                <a href="index.html" class="nav-link" id="link-home">← Home</a>
+                <div class="lang-toggle">
+                    <button id="btn-en" class="active" onclick="setLang('en')">EN</button>
+                    <span class="sep" aria-hidden="true">·</span>
+                    <button id="btn-es" onclick="setLang('es')">ES</button>
+                </div>
+            </nav>
+        </div>
     </div>
-    <div class="logo">GLITCH<span>TECH</span></div>
-    <div class="subtitle" id="txt-subtitle">AI Repair Assistant</div>
-    <div class="divider"></div>
-    <div id="step-form">
-      <div class="field">
-        <label id="lbl-name">FULL NAME <span class="req">*</span></label>
-        <input type="text" id="inp-name" placeholder="John Smith" />
-      </div>
-      <div class="field">
-        <label id="lbl-device">DEVICE TYPE <span class="req">*</span></label>
-        <input type="text" id="inp-device" placeholder="Laptop, Desktop, Tablet..." />
-      </div>
-      <div class="field">
-        <label id="lbl-brand">BRAND & MODEL</label>
-        <input type="text" id="inp-brand" placeholder="HP Pavilion, Dell XPS, MacBook..." />
-      </div>
-      <div class="field">
-        <label id="lbl-issue">DESCRIBE THE ISSUE <span class="req">*</span></label>
-        <textarea id="inp-issue" rows="4" placeholder="Tell us what's happening with your device..."></textarea>
-      </div>
-      <div class="error-msg" id="err-msg" style="display:none"></div>
-      <button class="submit-btn" id="btn-submit" onclick="handleSubmit()">⚡ ANALYZE &amp; QUOTE</button>
+</header>
+
+<main class="container">
+
+    <section class="intro">
+        <span class="eyebrow" id="txt-eyebrow">Free AI Quote</span>
+        <h1 id="txt-title">Tell us what's going on</h1>
+        <p id="txt-subtitle">A few quick details and we'll send back a friendly estimate — no pressure, no obligation.</p>
+    </section>
+
+    <div class="card">
+        <!-- The form area is locked (blurred + inert) until the disclosure modal is accepted -->
+        <div id="form-area" class="locked" inert>
+
+            <div id="step-form">
+                <div class="field">
+                    <label id="lbl-name" for="inp-name">Full name <span class="req">*</span></label>
+                    <input type="text" id="inp-name" placeholder="John Smith" autocomplete="name" />
+                </div>
+                <div class="field">
+                    <label id="lbl-device" for="inp-device">Device type <span class="req">*</span></label>
+                    <input type="text" id="inp-device" placeholder="Laptop, Desktop, Tablet..." />
+                </div>
+                <div class="field">
+                    <label id="lbl-brand" for="inp-brand">Brand & model <span class="opt" id="txt-opt">(optional)</span></label>
+                    <input type="text" id="inp-brand" placeholder="HP Pavilion, Dell XPS, MacBook..." />
+                </div>
+                <div class="field">
+                    <label id="lbl-issue" for="inp-issue">Describe the issue <span class="req">*</span></label>
+                    <textarea id="inp-issue" rows="4" placeholder="Tell us what's happening with your device..."></textarea>
+                    <span class="field-hint" id="txt-hint">The more detail you give, the better the estimate.</span>
+                </div>
+
+                <div id="err-msg" class="error-msg" style="display:none"></div>
+
+                <!-- Turnstile widget mounts here when enabled -->
+                <div id="turnstile-wrap" class="turnstile-wrap"></div>
+
+                <button class="btn btn-primary" id="btn-submit" onclick="handleSubmit()">Get my free estimate</button>
+
+                <div class="reassure">
+                    <span id="txt-reassure-1">🛡️ Free diagnostics</span>
+                    <span id="txt-reassure-2">💬 English & Español</span>
+                    <span id="txt-reassure-3">✅ Clear pricing</span>
+                </div>
+            </div>
+
+            <div id="step-loading" class="loading">
+                <div class="spinner"></div>
+                <div class="loading-label">
+                    <span id="txt-analyzing">Reviewing your info</span><span id="dots" class="loading-dots">...</span>
+                </div>
+                <div class="loading-sub" id="txt-analyzing-sub">This usually takes about 10 seconds.</div>
+            </div>
+
+            <div id="step-result" class="result">
+                <div class="result-cards">
+                    <div class="result-card">
+                        <div class="card-icon">💰</div>
+                        <div class="card-label" id="lbl-price">Estimated price</div>
+                        <div class="card-value" id="val-price">—</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="card-icon">⏱️</div>
+                        <div class="card-label" id="lbl-time">Estimated time</div>
+                        <div class="card-value" id="val-time">—</div>
+                    </div>
+                </div>
+                <div class="result-block">
+                    <div class="block-label" id="lbl-diagnosis">Likely diagnosis</div>
+                    <div class="block-text" id="val-diagnosis"></div>
+                </div>
+                <div class="result-block">
+                    <div class="block-label" id="lbl-followup">What happens next</div>
+                    <div class="block-text" id="val-followup"></div>
+                </div>
+                <div class="action-btns">
+                    <button class="action-btn" id="btn-copy" onclick="handleCopy()">Copy message</button>
+                    <button class="action-btn" id="btn-reset" onclick="handleReset()">New request</button>
+                </div>
+                <p class="disclaimer" id="txt-disclaimer">Estimates are preliminary and based on the info you shared. Final pricing is confirmed after diagnostics.</p>
+            </div>
+
+        </div>
     </div>
-    <div id="step-loading" class="loading">
-      <div class="spinner"></div>
-      <div class="loading-label" id="txt-analyzing">Scanning device profile...</div>
-      <div class="loading-dots" id="dots">...</div>
-      <div class="progress-bars">
-        <div class="progress-item"><div class="progress-label">DEVICE PROFILE</div><div class="progress-track"><div class="progress-fill" style="width:72%"></div></div></div>
-        <div class="progress-item"><div class="progress-label">ISSUE PATTERN</div><div class="progress-track"><div class="progress-fill" style="width:85%"></div></div></div>
-        <div class="progress-item"><div class="progress-label">PRICE MATRIX</div><div class="progress-track"><div class="progress-fill" style="width:91%"></div></div></div>
-      </div>
+
+</main>
+
+<footer>
+    <div class="container">
+        <span id="txt-footer">Mobile Repair · Boca Raton → Hallandale Beach · <a href="tel:+15618496319">(561) 849-6319</a></span>
     </div>
-    <div id="step-result" class="result">
-      <div class="result-cards">
-        <div class="result-card"><div class="card-icon">💰</div><div class="card-label" id="lbl-price">PRICE RANGE</div><div class="card-value" id="val-price">—</div></div>
-        <div class="result-card cyan"><div class="card-icon">⏱</div><div class="card-label cyan-label" id="lbl-time">EST. REPAIR TIME</div><div class="card-value cyan-value" id="val-time">—</div></div>
-      </div>
-      <div class="result-block"><div class="block-label" id="lbl-diagnosis">▸ DIAGNOSIS</div><div class="block-text" id="val-diagnosis"></div></div>
-      <div class="result-block cyan-block"><div class="block-label cyan-label" id="lbl-followup">▸ FOLLOW-UP MESSAGE</div><div class="block-text small" id="val-followup"></div></div>
-      <div class="action-btns">
-        <button class="action-btn" id="btn-copy" onclick="handleCopy()">⎘ COPY MESSAGE</button>
-        <button class="action-btn green-btn" onclick="handleReset()" id="btn-reset">↺ NEW REQUEST</button>
-      </div>
+</footer>
+
+<!-- Disclosure modal -->
+<div id="disclosure-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="disc-title">
+    <div class="modal">
+        <h2 id="disc-title">Before you get started</h2>
+        <p id="disc-intro">Quick heads-up so there are no surprises:</p>
+        <ul>
+            <li id="disc-p1">This tool gives a rough estimate using AI — it's not a final price.</li>
+            <li id="disc-p2">The info you enter (name, device, issue) is sent to us by email so we can follow up.</li>
+            <li id="disc-p3">Final pricing is always confirmed by a real person after a quick diagnostic.</li>
+            <li id="disc-p4">Please don't share passwords, card numbers, or other sensitive info here.</li>
+        </ul>
+        <p id="disc-outro">By continuing you agree to these terms and to be contacted about your request.</p>
+        <div class="modal-actions">
+            <button class="btn btn-primary" id="btn-accept" onclick="acceptDisclosure()">I understand — continue</button>
+            <a href="index.html" class="btn btn-outline" id="btn-back">Back to home</a>
+        </div>
     </div>
-    <div class="footer">
-      <div class="divider" style="margin-bottom:16px"></div>
-      <span id="txt-footer">Mobile Repair · Hallandale Beach to Boca Raton · 561-849-6319</span>
-    </div>
-  </div>
-  <script>
+</div>
+
+<script>
+    /* =====================================================================
+       Turnstile (Cloudflare) — optional, prepared but off by default.
+       To enable:
+         1. Set TURNSTILE_SITE_KEY below to your real site key.
+         2. Set TURNSTILE_SECRET_KEY in your Cloudflare Pages environment.
+            (see functions/api/chat.js)
+       When empty, nothing renders and the backend skips verification.
+       ===================================================================== */
+    const TURNSTILE_SITE_KEY = '';
+    let turnstileToken = '';
+
+    /* ===================== Translation table ===================== */
     const TX = {
-      en: { subtitle:"AI Repair Assistant", name:"FULL NAME", device:"DEVICE TYPE", brand:"BRAND & MODEL", issue:"DESCRIBE THE ISSUE", submit:"⚡ ANALYZE & QUOTE", analyzing:"Scanning device profile...", price:"PRICE RANGE", time:"EST. REPAIR TIME", diagnosis:"▸ DIAGNOSIS", followup:"▸ FOLLOW-UP MESSAGE", copy:"⎘ COPY MESSAGE", copied:"✓ COPIED!", reset:"↺ NEW REQUEST", required:"⚠ Please fill in all required fields.", error:"⚠ Something went wrong. Please try again.", footer:"Mobile Repair · Hallandale Beach to Boca Raton · 561-849-6319" },
-      es: { subtitle:"Asistente de Reparación IA", name:"NOMBRE COMPLETO", device:"TIPO DE DISPOSITIVO", brand:"MARCA Y MODELO", issue:"DESCRIBE EL PROBLEMA", submit:"⚡ ANALIZAR Y COTIZAR", analyzing:"Escaneando perfil del dispositivo...", price:"RANGO DE PRECIO", time:"TIEMPO EST. DE REPARACIÓN", diagnosis:"▸ DIAGNÓSTICO", followup:"▸ MENSAJE DE SEGUIMIENTO", copy:"⎘ COPIAR MENSAJE", copied:"✓ ¡COPIADO!", reset:"↺ NUEVA SOLICITUD", required:"⚠ Por favor completa todos los campos requeridos.", error:"⚠ Algo salió mal. Por favor intenta de nuevo.", footer:"Reparación Móvil · Hallandale Beach a Boca Raton · 561-849-6319" }
+        en: {
+            eyebrow: "Free AI Quote",
+            title: "Tell us what's going on",
+            subtitle: "A few quick details and we'll send back a friendly estimate — no pressure, no obligation.",
+            home: "← Home",
+            name: "Full name",
+            device: "Device type",
+            brand: "Brand & model",
+            optional: "(optional)",
+            issue: "Describe the issue",
+            hint: "The more detail you give, the better the estimate.",
+            submit: "Get my free estimate",
+            analyzing: "Reviewing your info",
+            analyzingSub: "This usually takes about 10 seconds.",
+            price: "Estimated price",
+            time: "Estimated time",
+            diagnosis: "Likely diagnosis",
+            followup: "What happens next",
+            copy: "Copy message",
+            copied: "✓ Copied",
+            reset: "New request",
+            required: "Please fill in the required fields.",
+            error: "Something went wrong. Please try again.",
+            turnstile: "Please complete the verification.",
+            disclaimer: "Estimates are preliminary and based on the info you shared. Final pricing is confirmed after diagnostics.",
+            footer: 'Mobile Repair · Boca Raton → Hallandale Beach · <a href="tel:+15618496319">(561) 849-6319</a>',
+            reassure1: "🛡️ Free diagnostics",
+            reassure2: "💬 English & Español",
+            reassure3: "✅ Clear pricing",
+            // Disclosure
+            discTitle: "Before you get started",
+            discIntro: "Quick heads-up so there are no surprises:",
+            discP1: "This tool gives a rough estimate using AI — it's not a final price.",
+            discP2: "The info you enter (name, device, issue) is sent to us by email so we can follow up.",
+            discP3: "Final pricing is always confirmed by a real person after a quick diagnostic.",
+            discP4: "Please don't share passwords, card numbers, or other sensitive info here.",
+            discOutro: "By continuing you agree to these terms and to be contacted about your request.",
+            discAccept: "I understand — continue",
+            discBack: "Back to home",
+            phName: "John Smith",
+            phDevice: "Laptop, Desktop, Tablet...",
+            phBrand: "HP Pavilion, Dell XPS, MacBook...",
+            phIssue: "Tell us what's happening with your device..."
+        },
+        es: {
+            eyebrow: "Cotización Gratis con IA",
+            title: "Cuéntanos qué está pasando",
+            subtitle: "Unos pocos detalles y te enviamos una estimación amistosa — sin presión, sin compromiso.",
+            home: "← Inicio",
+            name: "Nombre completo",
+            device: "Tipo de dispositivo",
+            brand: "Marca y modelo",
+            optional: "(opcional)",
+            issue: "Describe el problema",
+            hint: "Mientras más detalles des, mejor la estimación.",
+            submit: "Obtener mi estimación gratis",
+            analyzing: "Revisando tu información",
+            analyzingSub: "Esto suele tomar unos 10 segundos.",
+            price: "Precio estimado",
+            time: "Tiempo estimado",
+            diagnosis: "Diagnóstico probable",
+            followup: "Qué sigue",
+            copy: "Copiar mensaje",
+            copied: "✓ Copiado",
+            reset: "Nueva solicitud",
+            required: "Por favor completa los campos requeridos.",
+            error: "Algo salió mal. Por favor intenta de nuevo.",
+            turnstile: "Por favor completa la verificación.",
+            disclaimer: "Las estimaciones son preliminares y se basan en la información que compartiste. El precio final se confirma después del diagnóstico.",
+            footer: 'Reparación Móvil · Boca Ratón → Hallandale Beach · <a href="tel:+15618496319">(561) 849-6319</a>',
+            reassure1: "🛡️ Diagnóstico gratis",
+            reassure2: "💬 Inglés y Español",
+            reassure3: "✅ Precios claros",
+            // Disclosure
+            discTitle: "Antes de comenzar",
+            discIntro: "Un aviso rápido para que no haya sorpresas:",
+            discP1: "Esta herramienta da una estimación aproximada usando IA — no es un precio final.",
+            discP2: "La información que ingresas (nombre, dispositivo, problema) se nos envía por correo para poder contactarte.",
+            discP3: "El precio final siempre lo confirma una persona real después de un diagnóstico rápido.",
+            discP4: "Por favor no compartas contraseñas, números de tarjeta, ni información sensible aquí.",
+            discOutro: "Al continuar aceptas estos términos y que te contactemos sobre tu solicitud.",
+            discAccept: "Entiendo — continuar",
+            discBack: "Volver al inicio",
+            phName: "Juan Pérez",
+            phDevice: "Laptop, Escritorio, Tableta...",
+            phBrand: "HP Pavilion, Dell XPS, MacBook...",
+            phIssue: "Cuéntanos qué le pasa a tu dispositivo..."
+        }
     };
+
     let lang = 'en';
-    let lastName='', lastDevice='', lastBrand='', lastIssue='';
+    let lastName = '', lastDevice = '', lastBrand = '', lastIssue = '';
+
     function setLang(l) {
-      lang = l;
-      document.getElementById('btn-en').classList.toggle('active', l==='en');
-      document.getElementById('btn-es').classList.toggle('active', l==='es');
-      const t = TX[l];
-      document.getElementById('txt-subtitle').textContent = t.subtitle;
-      document.getElementById('lbl-name').innerHTML = t.name+' <span class="req">*</span>';
-      document.getElementById('lbl-device').innerHTML = t.device+' <span class="req">*</span>';
-      document.getElementById('lbl-brand').textContent = t.brand;
-      document.getElementById('lbl-issue').innerHTML = t.issue+' <span class="req">*</span>';
-      document.getElementById('btn-submit').textContent = t.submit;
-      document.getElementById('txt-analyzing').textContent = t.analyzing;
-      document.getElementById('lbl-price').textContent = t.price;
-      document.getElementById('lbl-time').textContent = t.time;
-      document.getElementById('lbl-diagnosis').textContent = t.diagnosis;
-      document.getElementById('lbl-followup').textContent = t.followup;
-      document.getElementById('btn-copy').textContent = t.copy;
-      document.getElementById('btn-reset').textContent = t.reset;
-      document.getElementById('txt-footer').textContent = t.footer;
-      const ph = l==='en' ? {name:'John Smith',device:'Laptop, Desktop, Tablet...',brand:'HP Pavilion, Dell XPS, MacBook...',issue:"Tell us what's happening with your device..."} : {name:'Juan Pérez',device:'Laptop, Escritorio, Tableta...',brand:'HP Pavilion, Dell XPS, MacBook...',issue:'Cuéntanos qué le pasa a tu dispositivo...'};
-      document.getElementById('inp-name').placeholder = ph.name;
-      document.getElementById('inp-device').placeholder = ph.device;
-      document.getElementById('inp-brand').placeholder = ph.brand;
-      document.getElementById('inp-issue').placeholder = ph.issue;
-      if (document.getElementById('step-result').style.display !== 'none' && lastName) {
-        retranslateResult();
-      }
+        lang = l;
+        document.documentElement.lang = l;
+        document.getElementById('btn-en').classList.toggle('active', l === 'en');
+        document.getElementById('btn-es').classList.toggle('active', l === 'es');
+        const t = TX[l];
+
+        document.getElementById('txt-eyebrow').textContent = t.eyebrow;
+        document.getElementById('txt-title').textContent = t.title;
+        document.getElementById('txt-subtitle').textContent = t.subtitle;
+        document.getElementById('link-home').textContent = t.home;
+
+        document.getElementById('lbl-name').innerHTML = t.name + ' <span class="req">*</span>';
+        document.getElementById('lbl-device').innerHTML = t.device + ' <span class="req">*</span>';
+        document.getElementById('lbl-brand').innerHTML = t.brand + ' <span class="opt" id="txt-opt">' + t.optional + '</span>';
+        document.getElementById('lbl-issue').innerHTML = t.issue + ' <span class="req">*</span>';
+        document.getElementById('txt-hint').textContent = t.hint;
+
+        document.getElementById('btn-submit').textContent = t.submit;
+        document.getElementById('txt-analyzing').textContent = t.analyzing;
+        document.getElementById('txt-analyzing-sub').textContent = t.analyzingSub;
+
+        document.getElementById('lbl-price').textContent = t.price;
+        document.getElementById('lbl-time').textContent = t.time;
+        document.getElementById('lbl-diagnosis').textContent = t.diagnosis;
+        document.getElementById('lbl-followup').textContent = t.followup;
+
+        document.getElementById('btn-copy').textContent = t.copy;
+        document.getElementById('btn-reset').textContent = t.reset;
+        document.getElementById('txt-disclaimer').textContent = t.disclaimer;
+        document.getElementById('txt-footer').innerHTML = t.footer;
+
+        document.getElementById('txt-reassure-1').textContent = t.reassure1;
+        document.getElementById('txt-reassure-2').textContent = t.reassure2;
+        document.getElementById('txt-reassure-3').textContent = t.reassure3;
+
+        // Disclosure modal content
+        document.getElementById('disc-title').textContent = t.discTitle;
+        document.getElementById('disc-intro').textContent = t.discIntro;
+        document.getElementById('disc-p1').textContent = t.discP1;
+        document.getElementById('disc-p2').textContent = t.discP2;
+        document.getElementById('disc-p3').textContent = t.discP3;
+        document.getElementById('disc-p4').textContent = t.discP4;
+        document.getElementById('disc-outro').textContent = t.discOutro;
+        document.getElementById('btn-accept').textContent = t.discAccept;
+        document.getElementById('btn-back').textContent = t.discBack;
+
+        // Placeholders
+        document.getElementById('inp-name').placeholder = t.phName;
+        document.getElementById('inp-device').placeholder = t.phDevice;
+        document.getElementById('inp-brand').placeholder = t.phBrand;
+        document.getElementById('inp-issue').placeholder = t.phIssue;
+
+        // If a result is currently shown, re-fetch it in the new language
+        if (document.getElementById('step-result').style.display !== 'none' && lastName) {
+            retranslateResult();
+        }
     }
-    async function retranslateResult() {
-      showStep('loading'); startDots();
-      const userMsg=lang==='en' ? `Customer: ${lastName}\nDevice: ${lastDevice}${lastBrand?` (${lastBrand})`:''}\nIssue: ${lastIssue}\n\nRespond in English.` : `Cliente: ${lastName}\nDispositivo: ${lastDevice}${lastBrand?` (${lastBrand})`:''}\nProblema: ${lastIssue}\n\nResponde en Español.`;
-      try {
-        const payload = { model:'claude-haiku-4-5-20251001', max_tokens:1000, system:`You are the AI diagnostic assistant for Glitch Tech Services, a bilingual (English/Spanish) mobile computer repair business serving Hallandale Beach to Boca Raton, FL. You specialize in laptops, desktops, tablets, and phones.\n\nGiven a customer's device info and issue, respond ONLY with a valid JSON object (no markdown, no code fences, no extra text):\n{"diagnosis":"detailed diagnosis of the likely issue","estimatedTime":"realistic repair time estimate","priceRange":"USD price range for the repair (e.g. $80–$120)","followUpMessage":"a professional, friendly follow-up/confirmation message the technician will send to the customer — include customer name, the issue, next steps, and contact info: 561-849-6319 / glitch-tech-services.pages.dev"}`, messages:[{role:'user',content:userMsg}] };
-        const controller = new AbortController();
-        const timeout = setTimeout(() => controller.abort(), 30000);
-        const res = await fetch('/api/chat', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload), signal:controller.signal });
-        clearTimeout(timeout);
-        const data = await res.json();
-        const raw = data.content?.[0]?.text||'';
-        const clean = raw.replace(/```json|```/g,'').replace(/[\x00-\x1F\x7F]/g,'').trim();
-        const match = clean.match(/\{[\s\S]*\}/);
-        if (!match) throw new Error('No valid response received');
-        const parsed = JSON.parse(match[0]);
-        document.getElementById('val-price').textContent=parsed.priceRange||'—';
-        document.getElementById('val-time').textContent=parsed.estimatedTime||'—';
-        document.getElementById('val-diagnosis').textContent=parsed.diagnosis||'';
-        document.getElementById('val-followup').textContent=parsed.followUpMessage||'';
-        stopDots(); showStep('result');
-      } catch(err) { stopDots(); showStep('result'); }
+
+    /* ===================== Disclosure ===================== */
+    const DISCLOSURE_KEY = 'gt_disclosure_accepted_v1';
+
+    function showDisclosure() {
+        document.getElementById('disclosure-modal').hidden = false;
+        const area = document.getElementById('form-area');
+        area.classList.add('locked');
+        area.setAttribute('inert', '');
     }
+
+    function hideDisclosure() {
+        document.getElementById('disclosure-modal').hidden = true;
+        const area = document.getElementById('form-area');
+        area.classList.remove('locked');
+        area.removeAttribute('inert');
+    }
+
+    function acceptDisclosure() {
+        try { localStorage.setItem(DISCLOSURE_KEY, String(Date.now())); } catch (e) {}
+        hideDisclosure();
+        // Mount Turnstile if configured (only after acceptance)
+        mountTurnstileIfEnabled();
+        // Focus first field for convenience
+        setTimeout(() => { const el = document.getElementById('inp-name'); if (el) el.focus(); }, 50);
+    }
+
+    function checkDisclosureOnLoad() {
+        let accepted = false;
+        try { accepted = !!localStorage.getItem(DISCLOSURE_KEY); } catch (e) {}
+        if (accepted) hideDisclosure(); else showDisclosure();
+    }
+
+    /* ===================== Turnstile (optional) ===================== */
+    function mountTurnstileIfEnabled() {
+        if (!TURNSTILE_SITE_KEY) return;
+        const wrap = document.getElementById('turnstile-wrap');
+        if (wrap.dataset.mounted === '1') return;
+        wrap.classList.add('on');
+        wrap.dataset.mounted = '1';
+        // Load the Turnstile script lazily
+        const s = document.createElement('script');
+        s.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileReady';
+        s.async = true;
+        s.defer = true;
+        document.head.appendChild(s);
+    }
+    // Global callback for Turnstile
+    window.onTurnstileReady = function () {
+        if (!window.turnstile || !TURNSTILE_SITE_KEY) return;
+        window.turnstile.render('#turnstile-wrap', {
+            sitekey: TURNSTILE_SITE_KEY,
+            callback: function (token) { turnstileToken = token; },
+            'error-callback': function () { turnstileToken = ''; },
+            'expired-callback': function () { turnstileToken = ''; }
+        });
+    };
+
+    /* ===================== Step helpers ===================== */
     function showStep(step) {
-      ['step-form','step-loading','step-result'].forEach(id => { const el=document.getElementById(id); el.style.display='none'; el.style.animation=''; });
-      const el = document.getElementById('step-'+step);
-      if (step==='loading') el.style.display='flex'; else el.style.display='block';
-      void el.offsetWidth;
-      el.style.animation='fadeInUp 0.4s ease';
+        ['step-form', 'step-loading', 'step-result'].forEach(id => {
+            const el = document.getElementById(id);
+            el.style.display = 'none';
+        });
+        const el = document.getElementById('step-' + step);
+        el.style.display = (step === 'loading') ? 'block' : 'block';
     }
-    let dotsInterval=null;
-    function startDots() { let n=1; dotsInterval=setInterval(()=>{ document.getElementById('dots').textContent='.'.repeat(n); n=(n%4)+1; },400); }
+
+    let dotsInterval = null;
+    function startDots() {
+        let n = 1;
+        dotsInterval = setInterval(() => {
+            document.getElementById('dots').textContent = '.'.repeat(n);
+            n = (n % 4) + 1;
+        }, 400);
+    }
     function stopDots() { clearInterval(dotsInterval); }
+
+    /* ===================== Anthropic payload ===================== */
+    function buildPayload(userMsg) {
+        const payload = {
+            model: 'claude-haiku-4-5-20251001',
+            max_tokens: 1000,
+            system: `You are the AI diagnostic assistant for Glitch Tech Services, a bilingual (English/Spanish) mobile computer repair business serving Hallandale Beach to Boca Raton, FL. You specialize in laptops, desktops, tablets, and phones.\n\nGiven a customer's device info and issue, respond ONLY with a valid JSON object (no markdown, no code fences, no extra text):\n{"diagnosis":"detailed diagnosis of the likely issue","estimatedTime":"realistic repair time estimate","priceRange":"USD price range for the repair (e.g. $80–$120)","followUpMessage":"a professional, friendly follow-up/confirmation message the technician will send to the customer — include customer name, the issue, next steps, and contact info: 561-849-6319 / glitch-tech-services.pages.dev"}`,
+            messages: [{ role: 'user', content: userMsg }]
+        };
+        // Attach Turnstile token if present — server will strip before forwarding
+        if (TURNSTILE_SITE_KEY && turnstileToken) payload.turnstileToken = turnstileToken;
+        return payload;
+    }
+
+    /* ===================== Re-run when language changes ===================== */
+    async function retranslateResult() {
+        showStep('loading'); startDots();
+        const userMsg = lang === 'en'
+            ? `Customer: ${lastName}\nDevice: ${lastDevice}${lastBrand ? ` (${lastBrand})` : ''}\nIssue: ${lastIssue}\n\nRespond in English.`
+            : `Cliente: ${lastName}\nDispositivo: ${lastDevice}${lastBrand ? ` (${lastBrand})` : ''}\nProblema: ${lastIssue}\n\nResponde en Español.`;
+        try {
+            const payload = buildPayload(userMsg);
+            const controller = new AbortController();
+            const timeout = setTimeout(() => controller.abort(), 30000);
+            const res = await fetch('/api/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload),
+                signal: controller.signal
+            });
+            clearTimeout(timeout);
+            const data = await res.json();
+            const raw = data.content?.[0]?.text || '';
+            const clean = raw.replace(/```json|```/g, '').replace(/[\x00-\x1F\x7F]/g, '').trim();
+            const match = clean.match(/\{[\s\S]*\}/);
+            if (!match) throw new Error('No valid response received');
+            const parsed = JSON.parse(match[0]);
+            document.getElementById('val-price').textContent = parsed.priceRange || '—';
+            document.getElementById('val-time').textContent = parsed.estimatedTime || '—';
+            document.getElementById('val-diagnosis').textContent = parsed.diagnosis || '';
+            document.getElementById('val-followup').textContent = parsed.followUpMessage || '';
+            stopDots(); showStep('result');
+        } catch (err) {
+            stopDots(); showStep('result');
+        }
+    }
+
+    /* ===================== Submit ===================== */
     async function handleSubmit() {
-      const t=TX[lang];
-      const name=document.getElementById('inp-name').value.trim();
-      const device=document.getElementById('inp-device').value.trim();
-      const brand=document.getElementById('inp-brand').value.trim();
-      const issue=document.getElementById('inp-issue').value.trim();
-      const errEl=document.getElementById('err-msg');
-      if (!name||!device||!issue) { errEl.textContent=t.required; errEl.style.display='block'; return; }
-      errEl.style.display='none';
-      showStep('loading'); startDots();
-      const userMsg=lang==='en' ? `Customer: ${name}\nDevice: ${device}${brand?` (${brand})`:''}\nIssue: ${issue}\n\nRespond in English.` : `Cliente: ${name}\nDispositivo: ${device}${brand?` (${brand})`:''}\nProblema: ${issue}\n\nResponde en Español.`;
-      try {
-        const payload = { model:'claude-haiku-4-5-20251001', max_tokens:1000, system:`You are the AI diagnostic assistant for Glitch Tech Services, a bilingual (English/Spanish) mobile computer repair business serving Hallandale Beach to Boca Raton, FL. You specialize in laptops, desktops, tablets, and phones.\n\nGiven a customer's device info and issue, respond ONLY with a valid JSON object (no markdown, no code fences, no extra text):\n{"diagnosis":"detailed diagnosis of the likely issue","estimatedTime":"realistic repair time estimate","priceRange":"USD price range for the repair (e.g. $80–$120)","followUpMessage":"a professional, friendly follow-up/confirmation message the technician will send to the customer — include customer name, the issue, next steps, and contact info: 561-849-6319 / glitch-tech-services.pages.dev"}`, messages:[{role:'user',content:userMsg}] };
-        const controller = new AbortController();
-        const timeout = setTimeout(() => controller.abort(), 30000);
-        const res = await fetch('/api/chat', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload),
-          signal: controller.signal
-        });
-        clearTimeout(timeout);
-        const data=await res.json();
-        const raw=data.content?.[0]?.text||'';
-        const clean=raw.replace(/```json|```/g,'').replace(/[\x00-\x1F\x7F]/g,'').trim();
-        const match=clean.match(/\{[\s\S]*\}/);
-        if (!match) throw new Error('No valid response received');
-        const parsed=JSON.parse(match[0]);
-        lastName=name; lastDevice=device; lastBrand=brand; lastIssue=issue;
-        document.getElementById('val-price').textContent=parsed.priceRange||'—';
-        document.getElementById('val-time').textContent=parsed.estimatedTime||'—';
-        document.getElementById('val-diagnosis').textContent=parsed.diagnosis||'';
-        document.getElementById('val-followup').textContent=parsed.followUpMessage||'';
-        emailjs.send('service_udyz9uu', 'template_ydwk8e7', {
-          to_email: 'glitchtechfl@gmail.com',
-          customer_name: name,
-          device: device + (brand ? ' (' + brand + ')' : ''),
-          issue: issue,
-          price: parsed.priceRange || '—',
-          repair_time: parsed.estimatedTime || '—',
-          diagnosis: parsed.diagnosis || '—'
-        }).catch(function(err) {
-          console.log('Email notification failed:', err);
-        });
-        stopDots(); showStep('result');
-      } catch (err) {
-        stopDots();
-        showStep('form');
-        errEl.textContent = '⚠ Error: ' + (err.message || JSON.stringify(err));
-        errEl.style.display = 'block';
-      }
+        const t = TX[lang];
+        const name = document.getElementById('inp-name').value.trim();
+        const device = document.getElementById('inp-device').value.trim();
+        const brand = document.getElementById('inp-brand').value.trim();
+        const issue = document.getElementById('inp-issue').value.trim();
+        const errEl = document.getElementById('err-msg');
+
+        if (!name || !device || !issue) {
+            errEl.textContent = t.required;
+            errEl.style.display = 'block';
+            return;
+        }
+        if (TURNSTILE_SITE_KEY && !turnstileToken) {
+            errEl.textContent = t.turnstile;
+            errEl.style.display = 'block';
+            return;
+        }
+        errEl.style.display = 'none';
+
+        showStep('loading'); startDots();
+        const userMsg = lang === 'en'
+            ? `Customer: ${name}\nDevice: ${device}${brand ? ` (${brand})` : ''}\nIssue: ${issue}\n\nRespond in English.`
+            : `Cliente: ${name}\nDispositivo: ${device}${brand ? ` (${brand})` : ''}\nProblema: ${issue}\n\nResponde en Español.`;
+
+        try {
+            const payload = buildPayload(userMsg);
+            const controller = new AbortController();
+            const timeout = setTimeout(() => controller.abort(), 30000);
+            const res = await fetch('/api/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload),
+                signal: controller.signal
+            });
+            clearTimeout(timeout);
+            const data = await res.json();
+            const raw = data.content?.[0]?.text || '';
+            const clean = raw.replace(/```json|```/g, '').replace(/[\x00-\x1F\x7F]/g, '').trim();
+            const match = clean.match(/\{[\s\S]*\}/);
+            if (!match) throw new Error('No valid response received');
+            const parsed = JSON.parse(match[0]);
+
+            lastName = name; lastDevice = device; lastBrand = brand; lastIssue = issue;
+
+            document.getElementById('val-price').textContent = parsed.priceRange || '—';
+            document.getElementById('val-time').textContent = parsed.estimatedTime || '—';
+            document.getElementById('val-diagnosis').textContent = parsed.diagnosis || '';
+            document.getElementById('val-followup').textContent = parsed.followUpMessage || '';
+
+            // Fire the EmailJS notification (unchanged behavior)
+            emailjs.send('service_udyz9uu', 'template_ydwk8e7', {
+                to_email: 'glitchtechfl@gmail.com',
+                customer_name: name,
+                device: device + (brand ? ' (' + brand + ')' : ''),
+                issue: issue,
+                price: parsed.priceRange || '—',
+                repair_time: parsed.estimatedTime || '—',
+                diagnosis: parsed.diagnosis || '—'
+            }).catch(function (err) {
+                console.log('Email notification failed:', err);
+            });
+
+            stopDots(); showStep('result');
+        } catch (err) {
+            stopDots();
+            showStep('form');
+            errEl.textContent = (TX[lang].error) + ' (' + (err.message || 'unknown') + ')';
+            errEl.style.display = 'block';
+        }
     }
+
+    /* ===================== Actions ===================== */
     function handleCopy() {
-      const text=document.getElementById('val-followup').textContent;
-      navigator.clipboard.writeText(text).then(()=>{ const btn=document.getElementById('btn-copy'); btn.textContent=TX[lang].copied; btn.classList.add('copied'); setTimeout(()=>{ btn.textContent=TX[lang].copy; btn.classList.remove('copied'); },2000); });
+        const text = document.getElementById('val-followup').textContent;
+        if (!text) return;
+        navigator.clipboard.writeText(text).then(() => {
+            const btn = document.getElementById('btn-copy');
+            btn.textContent = TX[lang].copied;
+            btn.classList.add('copied');
+            setTimeout(() => {
+                btn.textContent = TX[lang].copy;
+                btn.classList.remove('copied');
+            }, 2000);
+        });
     }
+
     function handleReset() {
-      document.getElementById('inp-name').value='';
-      document.getElementById('inp-device').value='';
-      document.getElementById('inp-brand').value='';
-      document.getElementById('inp-issue').value='';
-      document.getElementById('err-msg').style.display='none';
-      showStep('form');
+        document.getElementById('inp-name').value = '';
+        document.getElementById('inp-device').value = '';
+        document.getElementById('inp-brand').value = '';
+        document.getElementById('inp-issue').value = '';
+        document.getElementById('err-msg').style.display = 'none';
+        showStep('form');
     }
+
+    /* ===================== Init ===================== */
     showStep('form');
-  </script>
+    checkDisclosureOnLoad();
+    // If already accepted (returning visitor), mount Turnstile right away
+    (function mountTurnstileIfAccepted() {
+        let accepted = false;
+        try { accepted = !!localStorage.getItem(DISCLOSURE_KEY); } catch (e) {}
+        if (accepted) mountTurnstileIfEnabled();
+    })();
+</script>
+
 </body>
 </html>
