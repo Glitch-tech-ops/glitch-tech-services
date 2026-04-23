@@ -571,6 +571,7 @@
             .how-it-works,
             .services,
             .reviews,
+            .repairs,
             .about {
                 padding: 44px 0;
             }
@@ -584,6 +585,39 @@
             .footer-contact {
                 text-align: center;
             }
+        }
+
+        /* Trabajos Recientes — photo grid */
+        .repairs {
+            padding: 64px 0;
+            background: var(--surface);
+        }
+
+        .repairs-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .repair-photo img {
+            width: 100%;
+            aspect-ratio: 4 / 3;
+            object-fit: cover;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            display: block;
+        }
+
+        .repair-caption {
+            margin-top: 10px;
+            font-size: 0.88rem;
+            color: var(--ink-muted);
+            text-align: center;
+            line-height: 1.4;
+        }
+
+        @media (max-width: 640px) {
+            .repairs-grid { grid-template-columns: 1fr; }
         }
 
         @media (max-width: 420px) {
@@ -737,6 +771,27 @@
                         <div class="review-stars" aria-label="5 de 5 estrellas">★★★★★</div>
                         <p class="review-text">"Servicio increíble, rápido y confiable. Una persona muy conocedora del tema."</p>
                         <p class="review-author">— Kenneth G.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="repairs">
+            <div class="container">
+                <h2 class="section-title">Trabajos Recientes</h2>
+                <p class="section-sub">Un vistazo a algunos de los trabajos que hemos realizado.</p>
+                <div class="repairs-grid">
+                    <div class="repair-photo">
+                        <img src="img/repair-ssd.jpg" alt="SSD Silicon Power A58 de 1TB listo para instalación" loading="lazy" />
+                        <p class="repair-caption">Actualización de SSD y migración del sistema</p>
+                    </div>
+                    <div class="repair-photo">
+                        <img src="img/repair-laptop.jpg" alt="Laptop HP abierta mostrando la tarjeta madre durante el diagnóstico" loading="lazy" />
+                        <p class="repair-caption">Diagnóstico y reparación interna de laptop</p>
+                    </div>
+                    <div class="repair-photo">
+                        <img src="img/repair-hardware.jpg" alt="Interior de laptop HP con nueva SSD instalada durante actualización de hardware" loading="lazy" />
+                        <p class="repair-caption">Actualización de hardware y limpieza</p>
                     </div>
                 </div>
             </div>
