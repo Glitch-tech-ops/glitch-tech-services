@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Virus & Malware Removal in Hallandale Beach | Glitch Tech Services</title>
+    <meta name="description" content="Mobile virus and malware removal in Hallandale Beach and West Park. $50–$80, full cleanup included. Free diagnostics, English & Español.">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%23fdfaf6'/%3E%3Cpath d='M30 20 L50 50 L30 80 L40 80 L60 50 L40 20 Z' fill='%23e07856' opacity='0.85'/%3E%3Cpath d='M45 20 L65 50 L45 80 L55 80 L75 50 L55 20 Z' fill='%23e07856'/%3E%3C/svg%3E">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #fdfaf6;
+            --surface: #ffffff;
+            --surface-soft: #f7f2ec;
+            --ink: #1f1d1b;
+            --ink-muted: #6b6560;
+            --coral: #e07856;
+            --coral-dark: #c95f3e;
+            --coral-soft: #fdeee7;
+            --border: #ece5de;
+            --star: #f5a524;
+            --shadow-sm: 0 1px 3px rgba(50, 30, 20, 0.04);
+            --shadow: 0 2px 12px rgba(50, 30, 20, 0.05);
+            --shadow-lg: 0 8px 32px rgba(50, 30, 20, 0.08);
+            --radius: 14px;
+            --radius-sm: 10px;
+            --max-width: 1080px;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--ink);
+            font-size: 17px;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        h1, h2, h3 {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            line-height: 1.25;
+            letter-spacing: -0.01em;
+            color: var(--ink);
+        }
+
+        a { color: inherit; }
+
+        .container {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* Header */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(253, 250, 246, 0.92);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .header-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 18px 0;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-weight: 700;
+            font-size: 1.35rem;
+            letter-spacing: -0.02em;
+            text-decoration: none;
+            color: var(--ink);
+        }
+
+        .logo span { color: var(--coral); }
+
+        .header-nav {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+
+        .phone-link {
+            color: var(--coral);
+            font-weight: 600;
+            text-decoration: none;
+            font-size: 1rem;
+            display: inline-flex;
+            gap: 6px;
+            align-items: center;
+            transition: color 0.15s;
+        }
+        .phone-link:hover { color: var(--coral-dark); }
+
+        .btn {
+            display: inline-block;
+            padding: 11px 20px;
+            border-radius: var(--radius-sm);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.98rem;
+            font-family: inherit;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.15s, background 0.15s, border-color 0.15s, color 0.15s;
+            white-space: nowrap;
+        }
+
+        .btn-primary {
+            background: var(--coral);
+            color: #fff;
+        }
+        .btn-primary:hover {
+            background: var(--coral-dark);
+            transform: translateY(-1px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--ink);
+            border: 1.5px solid var(--border);
+        }
+        .btn-outline:hover {
+            border-color: var(--coral);
+            color: var(--coral);
+        }
+
+        .btn-lg {
+            padding: 15px 28px;
+            font-size: 1.02rem;
+        }
+
+        .lang-toggle {
+            display: inline-flex;
+            gap: 4px;
+            align-items: center;
+            font-size: 0.9rem;
+            color: var(--ink-muted);
+        }
+        .lang-toggle a, .lang-toggle span {
+            color: var(--ink-muted);
+            text-decoration: none;
+            padding: 2px 4px;
+        }
+        .lang-toggle .active {
+            color: var(--ink);
+            font-weight: 600;
+        }
+        .lang-toggle a:hover { color: var(--coral); }
+
+        .nav-link {
+            color: var(--ink-muted);
+            text-decoration: none;
+            font-size: 0.92rem;
+            transition: color 0.15s;
+        }
+        .nav-link:hover { color: var(--coral); }
+
+        /* Hero */
+        .hero {
+            padding: 64px 0 40px;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: clamp(1.9rem, 4.5vw, 2.7rem);
+            font-weight: 700;
+            max-width: 820px;
+            margin: 0 auto 18px;
+        }
+
+        .hero .hero-intro {
+            font-size: 1.05rem;
+            color: var(--ink-muted);
+            max-width: 680px;
+            margin: 0 auto 24px;
+            line-height: 1.7;
+        }
+
+        .cta-row {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 12px;
+        }
+
+        .trust-chips {
+            display: flex;
+            justify-content: center;
+            gap: 10px 24px;
+            flex-wrap: wrap;
+            font-size: 0.92rem;
+            color: var(--ink-muted);
+            margin-top: 18px;
+        }
+
+        .trust-chips span {
+            display: inline-flex;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .check {
+            color: var(--coral);
+            font-weight: 700;
+        }
+
+        /* Generic content sections */
+        .content-section {
+            padding: 56px 0;
+        }
+
+        .content-section.alt {
+            background: var(--surface-soft);
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: clamp(1.55rem, 3.2vw, 2rem);
+            font-weight: 700;
+            margin-bottom: 14px;
+        }
+
+        .section-sub {
+            text-align: center;
+            color: var(--ink-muted);
+            max-width: 600px;
+            margin: 0 auto 32px;
+        }
+
+        .content-inner {
+            max-width: 760px;
+            margin: 0 auto;
+        }
+
+        .content-inner p {
+            color: var(--ink);
+            font-size: 1.02rem;
+            line-height: 1.7;
+            margin-bottom: 16px;
+        }
+
+        .content-inner .muted {
+            color: var(--ink-muted);
+        }
+
+        .content-list {
+            list-style: none;
+            display: grid;
+            gap: 10px;
+            margin-bottom: 18px;
+        }
+
+        .content-list li {
+            padding-left: 28px;
+            position: relative;
+            color: var(--ink);
+            font-size: 1.02rem;
+            line-height: 1.6;
+        }
+
+        .content-list li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            top: 0;
+            color: var(--coral);
+            font-weight: 700;
+        }
+
+        .steps-list {
+            list-style: none;
+            counter-reset: step;
+            display: grid;
+            gap: 22px;
+        }
+
+        .steps-list li {
+            counter-increment: step;
+            padding-left: 58px;
+            position: relative;
+            min-height: 48px;
+        }
+
+        .steps-list li::before {
+            content: counter(step);
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--coral-soft);
+            color: var(--coral);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-weight: 700;
+            font-size: 1.05rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .steps-list li strong {
+            display: block;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 1.08rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .steps-list li span {
+            color: var(--ink-muted);
+            font-size: 1rem;
+            line-height: 1.65;
+        }
+
+        .pricing-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 32px 28px;
+            box-shadow: var(--shadow-sm);
+            text-align: center;
+            max-width: 560px;
+            margin: 0 auto;
+        }
+
+        .pricing-card .price {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--coral);
+            margin-bottom: 8px;
+        }
+
+        .pricing-card .price-note {
+            color: var(--ink);
+            font-size: 1.02rem;
+            margin-bottom: 14px;
+        }
+
+        .pricing-card .price-sub {
+            color: var(--ink-muted);
+            font-size: 0.95rem;
+        }
+
+        .closing-line {
+            text-align: center;
+            color: var(--ink-muted);
+            font-size: 1rem;
+            margin-top: 18px;
+        }
+
+        /* CTA block */
+        .cta-block {
+            padding: 64px 0;
+            text-align: center;
+        }
+
+        .cta-block h2 {
+            font-size: clamp(1.6rem, 3.4vw, 2.1rem);
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .cta-block p {
+            color: var(--ink-muted);
+            max-width: 560px;
+            margin: 0 auto 26px;
+            font-size: 1.05rem;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--surface-soft);
+            color: var(--ink-muted);
+            padding: 40px 0 28px;
+            font-size: 0.92rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .footer-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .footer-brand {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-weight: 600;
+            color: var(--ink);
+            font-size: 1rem;
+        }
+
+        .footer-area {
+            color: var(--ink-muted);
+            font-size: 0.88rem;
+            margin-top: 4px;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: var(--ink-muted);
+            text-decoration: none;
+            transition: color 0.15s;
+        }
+        .footer-links a:hover { color: var(--coral); }
+
+        .footer-contact {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            text-align: right;
+        }
+
+        .footer-contact a {
+            color: var(--ink);
+            text-decoration: none;
+        }
+        .footer-contact a:hover { color: var(--coral); }
+
+        /* Mobile */
+        @media (max-width: 760px) {
+            .header-inner {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 12px;
+                padding: 14px 0;
+            }
+
+            .header-top-row {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .header-nav {
+                justify-content: center;
+                gap: 10px 14px;
+            }
+
+            .hero {
+                padding: 40px 0 28px;
+            }
+
+            .cta-row .btn {
+                width: 100%;
+            }
+
+            .content-section,
+            .cta-block {
+                padding: 42px 0;
+            }
+
+            .footer-inner {
+                flex-direction: column;
+                text-align: center;
+                gap: 16px;
+            }
+
+            .footer-contact {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-inner">
+                <div class="header-top-row">
+                    <a href="index.html" class="logo">Glitch<span>Tech</span></a>
+                </div>
+                <nav class="header-nav">
+                    <a href="tel:+15618496319" class="phone-link" aria-label="Call Glitch Tech">📞 (561) 849-6319</a>
+                    <a href="/assistant" class="btn btn-primary">Get a Quote</a>
+                    <a href="customer-portal.html" class="nav-link">Portal</a>
+                    <div class="lang-toggle">
+                        <span class="active">EN</span>
+                        <span aria-hidden="true">·</span>
+                        <a href="virus-removal-hallandale-beach-es.html">ES</a>
+                    </div>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="container">
+                <h1>Virus &amp; Malware Removal in Hallandale Beach &amp; West Park</h1>
+                <p class="hero-intro">If your computer is slow, showing pop-ups, or acting strange, it may have picked up a virus or malware. At Glitch Tech, we do mobile virus and malware removal in Hallandale Beach, West Park, and nearby communities. We come to you, explain what's going on in plain words, and clean up your device — no jargon, no pressure. Free diagnostics, clear pricing before we start. English &amp; Español.</p>
+
+                <div class="cta-row">
+                    <a href="/assistant" class="btn btn-primary btn-lg">Get a Free Quote</a>
+                    <a href="tel:+15618496319" class="btn btn-outline btn-lg">Call (561) 849-6319</a>
+                </div>
+
+                <div class="trust-chips">
+                    <span><span class="check">✓</span> Free diagnostics</span>
+                    <span><span class="check">✓</span> Clear pricing before work starts</span>
+                    <span><span class="check">✓</span> We come to you</span>
+                    <span><span class="check">✓</span> English &amp; Español</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="content-section alt">
+            <div class="container">
+                <h2 class="section-title">Signs your computer may have a virus</h2>
+                <div class="content-inner">
+                    <ul class="content-list">
+                        <li>Pop-ups or ads appearing out of nowhere</li>
+                        <li>Your browser opens pages you didn't click on</li>
+                        <li>Your computer is suddenly very slow</li>
+                        <li>Programs you don't recognize are running</li>
+                        <li>Your security software is turned off or can't update</li>
+                        <li>Strange toolbars or search engines you didn't install</li>
+                    </ul>
+                    <p class="closing-line">If any of this sounds familiar, it's worth getting checked. Diagnostics are always free.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <div class="container">
+                <h2 class="section-title">How our virus removal works</h2>
+                <div class="content-inner">
+                    <ol class="steps-list">
+                        <li>
+                            <strong>Free diagnostic.</strong>
+                            <span>We take a look and tell you what's going on, at no cost.</span>
+                        </li>
+                        <li>
+                            <strong>Clear quote.</strong>
+                            <span>If it's a virus, we explain what kind and what it takes to remove it. You see the price before we do anything.</span>
+                        </li>
+                        <li>
+                            <strong>Full cleanup.</strong>
+                            <span>We remove the infection, clean up your browser, and check that Windows or macOS is up to date.</span>
+                        </li>
+                        <li>
+                            <strong>Basic protection.</strong>
+                            <span>Before we leave, we make sure you have working antivirus so you're covered going forward.</span>
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        </section>
+
+        <section class="content-section alt">
+            <div class="container">
+                <h2 class="section-title">What's included</h2>
+                <div class="content-inner">
+                    <ul class="content-list">
+                        <li>Full scan and malware removal</li>
+                        <li>Browser cleanup (hijacked homepages, fake extensions, junk search engines)</li>
+                        <li>Windows or macOS update check</li>
+                        <li>Basic security setup so you're protected going forward</li>
+                        <li>A simple explanation of what happened and how to avoid it next time</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <div class="container">
+                <h2 class="section-title">Pricing</h2>
+                <div class="pricing-card">
+                    <div class="price">$50 – $80</div>
+                    <p class="price-note">for most virus and malware cleanups.</p>
+                    <p class="price-sub">Final price depends on how much infection there is and how long cleanup takes — but you'll always see the price before we start.</p>
+                </div>
+                <p class="closing-line">Free diagnostic. No surprise charges. Clear pricing before any work.</p>
+            </div>
+        </section>
+
+        <section class="content-section alt">
+            <div class="container">
+                <h2 class="section-title">Service area</h2>
+                <div class="content-inner">
+                    <p>We're a mobile service and come to you. Primary service areas are <strong>Hallandale Beach</strong> and <strong>West Park</strong>. We also travel to nearby communities including Hollywood, Miramar, Pembroke Pines, Dania Beach, Fort Lauderdale, and Boca Raton.</p>
+                    <p class="muted">Bilingual service — English &amp; Español.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="cta-block">
+            <div class="container">
+                <h2>Think your computer has a virus?</h2>
+                <p>Get a free quote. Tell us what's going on in your own words, and we'll send back a friendly estimate.</p>
+                <div class="cta-row" style="margin-bottom:0">
+                    <a href="/assistant" class="btn btn-primary btn-lg">Get a Free Quote</a>
+                    <a href="tel:+15618496319" class="btn btn-outline btn-lg">Call (561) 849-6319</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-inner">
+                <div>
+                    <div class="footer-brand">Glitch Tech Services</div>
+                    <div class="footer-area">Hallandale Beach · West Park · South Florida · &copy; 2026</div>
+                </div>
+                <div class="footer-links">
+                    <a href="index.html">Home</a>
+                    <a href="/assistant">Get a Quote</a>
+                    <a href="customer-portal.html">Customer Portal</a>
+                </div>
+                <div class="footer-contact">
+                    <a href="tel:+15618496319">📞 (561) 849-6319</a>
+                    <a href="mailto:glitchtechfl@gmail.com">glitchtechfl@gmail.com</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Free Computer Repair Quote in Hallandale Beach &amp; West Park | Glitch Tech</title>
-    <meta name="description" content="Get a fast computer repair estimate from Glitch Tech. Free diagnostics, clear pricing, and friendly service in Hallandale Beach, West Park, and nearby areas." />
+    <title>Free Computer Repair Quote · Hallandale Beach &amp; West Park | Glitch Tech</title>
+    <meta name="description" content="Get a free computer repair quote in Hallandale Beach and West Park. Describe your problem and we'll send a friendly estimate. English &amp; Español." />
     <link rel="canonical" href="https://glitch-tech-services.pages.dev/assistant" />
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%23fdfaf6'/%3E%3Cpath d='M30 20 L50 50 L30 80 L40 80 L60 50 L40 20 Z' fill='%23e07856' opacity='0.85'/%3E%3Cpath d='M45 20 L65 50 L45 80 L55 80 L75 50 L55 20 Z' fill='%23e07856'/%3E%3C/svg%3E" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -160,7 +160,29 @@
             color: var(--ink-muted);
             font-size: 1.02rem;
             max-width: 540px;
+            margin: 0 auto 10px;
+        }
+        .intro p.intro-lede {
+            font-size: 0.96rem;
+            max-width: 600px;
+            line-height: 1.65;
             margin: 0 auto;
+        }
+        .virus-hint {
+            text-align: center;
+            font-size: 0.95rem;
+            color: var(--ink-muted);
+            margin-top: 18px;
+        }
+        .virus-hint a {
+            color: var(--coral);
+            text-decoration: none;
+            font-weight: 600;
+            border-bottom: 1px solid var(--coral-soft);
+        }
+        .virus-hint a:hover {
+            color: var(--coral-dark);
+            border-color: var(--coral);
         }
 
         /* Card */
@@ -503,8 +525,9 @@
 
     <section class="intro">
         <span class="eyebrow" id="txt-eyebrow">Free AI Quote</span>
-        <h1 id="txt-title">Tell us what's going on</h1>
-        <p id="txt-subtitle">A few quick details and we'll send back a friendly estimate — no pressure, no obligation.</p>
+        <h1 id="txt-title">Get a Free Computer Repair Quote</h1>
+        <p id="txt-subtitle">Tell us what's going on — we'll send back a friendly estimate.</p>
+        <p id="txt-intro" class="intro-lede">A few quick details about your computer problem, and we'll send back a friendly estimate — no pressure, no obligation. Serving Hallandale Beach, West Park, and nearby South Florida communities. English &amp; Español.</p>
     </section>
 
     <div class="card">
@@ -583,6 +606,8 @@
         </div>
     </div>
 
+    <p class="virus-hint" id="virus-hint">Think it might be a virus? <a href="virus-removal-hallandale-beach.html" id="virus-hint-link">See our virus removal details</a>.</p>
+
 </main>
 
 <footer>
@@ -626,8 +651,10 @@
     const TX = {
         en: {
             eyebrow: "Free AI Quote",
-            title: "Tell us what's going on",
-            subtitle: "A few quick details and we'll send back a friendly estimate — no pressure, no obligation.",
+            title: "Get a Free Computer Repair Quote",
+            subtitle: "Tell us what's going on — we'll send back a friendly estimate.",
+            intro: "A few quick details about your computer problem, and we'll send back a friendly estimate — no pressure, no obligation. Serving Hallandale Beach, West Park, and nearby South Florida communities. English & Español.",
+            virusHint: 'Think it might be a virus? <a href="virus-removal-hallandale-beach.html">See our virus removal details</a>.',
             home: "← Home",
             name: "Full name",
             device: "Device type",
@@ -670,8 +697,10 @@
         },
         es: {
             eyebrow: "Cotización Gratis con IA",
-            title: "Cuéntanos qué está pasando",
-            subtitle: "Unos pocos detalles y te enviamos una estimación amistosa — sin presión, sin compromiso.",
+            title: "Cotización Gratis de Reparación de Computadoras",
+            subtitle: "Cuéntanos qué sucede — te enviaremos una estimación amable.",
+            intro: "Unos detalles rápidos sobre el problema de tu computadora y te enviaremos una estimación amable — sin presión, sin compromiso. Atendemos Hallandale Beach, West Park y comunidades cercanas del sur de Florida. English & Español.",
+            virusHint: '¿Crees que podría ser un virus? <a href="virus-removal-hallandale-beach-es.html">Ver detalles de eliminación de virus</a>.',
             home: "← Inicio",
             name: "Nombre completo",
             device: "Tipo de dispositivo",
@@ -727,6 +756,8 @@
         document.getElementById('txt-eyebrow').textContent = t.eyebrow;
         document.getElementById('txt-title').textContent = t.title;
         document.getElementById('txt-subtitle').textContent = t.subtitle;
+        document.getElementById('txt-intro').textContent = t.intro;
+        document.getElementById('virus-hint').innerHTML = t.virusHint;
         document.getElementById('link-home').textContent = t.home;
 
         document.getElementById('lbl-name').innerHTML = t.name + ' <span class="req">*</span>';
