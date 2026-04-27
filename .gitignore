@@ -31,6 +31,9 @@ desktop.ini
 # Cloudflare local
 .wrangler/
 
+# Internal phase notes (not deployed)
+PHASE_7B_*.md
+
 # Local backups (defensive — quarantine lives outside repo, but just in case)
 *backup*
 *Backup*

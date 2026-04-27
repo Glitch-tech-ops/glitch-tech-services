@@ -410,6 +410,19 @@
             border-color: var(--coral);
         }
 
+        .success-help {
+            margin-top: 16px;
+            font-size: 0.92rem;
+            color: var(--ink-muted);
+            text-align: center;
+        }
+        .success-help a {
+            color: var(--coral);
+            font-weight: 600;
+            text-decoration: none;
+        }
+        .success-help a:hover { color: var(--coral-dark); }
+
         .disclaimer {
             margin-top: 18px;
             font-size: 0.82rem;
@@ -602,6 +615,7 @@
                     <button class="action-btn" id="btn-copy" onclick="handleCopy()">Copy message</button>
                     <button class="action-btn" id="btn-reset" onclick="handleReset()">New request</button>
                 </div>
+                <p class="success-help" id="txt-success-help">Need to talk to a person? Call or text us at <a href="tel:+15618496319">(561) 849-6319</a>.</p>
                 <p class="disclaimer" id="txt-disclaimer">Estimates are preliminary and based on the info you shared. Final pricing is confirmed after diagnostics.</p>
             </div>
 
@@ -678,6 +692,8 @@
             error: "Something went wrong. Please try again.",
             turnstile: "Please complete the verification.",
             disclaimer: "Estimates are preliminary and based on the info you shared. Final pricing is confirmed after diagnostics.",
+            successHelp: 'Need to talk to a person? Call or text us at <a href="tel:+15618496319">(561) 849-6319</a>.',
+            errorFallback: 'You can also reach us directly: <a href="tel:+15618496319">(561) 849-6319</a>.',
             footer: 'Mobile Repair · Boca Raton → Hallandale Beach · <a href="tel:+15618496319">(561) 849-6319</a>',
             reassure1: "🛡️ Free diagnostics",
             reassure2: "💬 English & Español",
@@ -724,6 +740,8 @@
             error: "Algo salió mal. Por favor intenta de nuevo.",
             turnstile: "Por favor completa la verificación.",
             disclaimer: "Las estimaciones son preliminares y se basan en la información que compartiste. El precio final se confirma después del diagnóstico.",
+            successHelp: '¿Necesita hablar con una persona? Llámenos o envíenos un texto al <a href="tel:+15618496319">(561) 849-6319</a>.',
+            errorFallback: 'También puede contactarnos directamente: <a href="tel:+15618496319">(561) 849-6319</a>.',
             footer: 'Reparación Móvil · Boca Ratón → Hallandale Beach · <a href="tel:+15618496319">(561) 849-6319</a>',
             reassure1: "🛡️ Diagnóstico gratis",
             reassure2: "💬 Inglés y Español",
@@ -780,6 +798,7 @@
         document.getElementById('btn-copy').textContent = t.copy;
         document.getElementById('btn-reset').textContent = t.reset;
         document.getElementById('txt-disclaimer').textContent = t.disclaimer;
+        document.getElementById('txt-success-help').innerHTML = t.successHelp;
         document.getElementById('txt-footer').innerHTML = t.footer;
 
         document.getElementById('txt-reassure-1').textContent = t.reassure1;
@@ -1000,7 +1019,15 @@
         } catch (err) {
             stopDots();
             showStep('form');
-            errEl.textContent = (TX[lang].error) + ' (' + (err.message || 'unknown') + ')';
+            // Render dynamic error text via textContent (never innerHTML with err.message).
+            // Fallback line uses only the static localized HTML from TX, no dynamic data.
+            errEl.textContent = '';
+            const errLine = document.createElement('div');
+            errLine.textContent = TX[lang].error + ' (' + (err.message || 'unknown') + ')';
+            errEl.appendChild(errLine);
+            const fallbackLine = document.createElement('div');
+            fallbackLine.innerHTML = TX[lang].errorFallback;
+            errEl.appendChild(fallbackLine);
             errEl.style.display = 'block';
         }
     }
